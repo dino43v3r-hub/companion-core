@@ -59,7 +59,7 @@ downloadButton.addEventListener("click", () => {
   const link = document.createElement("a");
 
   link.href = url;
-  link.download = "companion-profile-v0.1.txt";
+  link.download = "companion-profile-v0-1.txt";
   document.body.appendChild(link);
   link.click();
   link.remove();
@@ -95,13 +95,21 @@ function buildProfile() {
 
   return `Companion Profile v0.1
 
-What I'm beginning to notice
+This profile belongs to the person who created it.
+It is a small, portable starting point for an AI Companion.
+It can be copied into any AI platform, changed at any time, or ignored where it does not feel right.
 
-From this short conversation, ${observations[0].notice}
-${observations[1].notice}
-${observations[2].notice}
+Instructions for the AI Companion
 
-How your companion should work with you
+Use this profile gently. Do not treat it as a test result, diagnosis, or fixed identity. Let it guide how you listen, ask questions, and support the person. Keep learning from what the person says next.
+
+Observed patterns
+
+${formatProfileList(observations.map((observation, index) => (
+    index === 0 ? `From this short conversation, ${observation.notice}` : observation.notice
+  )))}
+
+How to work with this person
 
 ${support}
 
@@ -109,7 +117,15 @@ Things we can keep discovering together
 
 ${discovery}
 
-This is only a first sketch from a few answers. You can change it, ignore parts of it, or let it grow slowly.`;
+This is only a first sketch from a few answers. You can change it, ignore parts of it, or let it grow slowly.
+
+How to use this profile
+
+Copy this whole profile into the AI platform you want to use. You can say: "Please use this as a starting point for how you talk with me."
+
+Saving this in your AI platform
+
+If your AI platform lets you save memories, custom instructions, or project notes, paste this profile there. If it does not, keep this text file and paste it into a new conversation when you want your companion to remember the starting point.`;
 }
 
 function noticePatterns(responses) {
@@ -248,14 +264,16 @@ function fillObservations(scored, fallback) {
 }
 
 function buildSupportGuidance(observations) {
-  return observations
+  return formatProfileList(observations
     .slice(0, 2)
-    .map((observation) => observation.support)
-    .join("\n");
+    .map((observation) => observation.support));
 }
 
 function buildDiscoveryGuidance(observations) {
-  return observations
-    .map((observation) => observation.discovery)
-    .join("\n");
+  return formatProfileList(observations
+    .map((observation) => observation.discovery));
+}
+
+function formatProfileList(items) {
+  return items.map((item) => `- ${item}`).join("\n");
 }
