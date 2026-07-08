@@ -4,7 +4,7 @@
   "description": "Claude can be a home for your companion if you give it the Companion Package and ask it to keep learning naturally.",
   "best_option": "Use Project Instructions if they are available to you.",
   "fallback_option": "If projects are not available, begin a new conversation and paste the Companion Package.",
-  "steps": [
+  "numbered_steps": [
     "Open Claude.",
     "Start a new chat, or open a project if you already use one.",
     "Paste your Companion Package.",

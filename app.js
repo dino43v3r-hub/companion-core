@@ -220,6 +220,7 @@ async function showPlatformGuide(platform) {
 
   try {
     const guide = await loadPlatformGuide(platform);
+    console.log("Loaded platform guide", platform, guide.platform);
     renderPlatformGuide(guide);
   } catch (error) {
     console.error("Could not load platform guide", { platform, error });
@@ -234,7 +235,13 @@ async function loadPlatformGuide(platform) {
     throw new Error(`Guide not found: ${platform}`);
   }
 
-  return response.json();
+  const guide = await response.json();
+
+  if (guide.platform !== platform) {
+    throw new Error(`Guide platform mismatch: expected ${platform}, received ${guide.platform}`);
+  }
+
+  return guide;
 }
 
 function renderPlatformGuide(guide) {
@@ -245,7 +252,7 @@ function renderPlatformGuide(guide) {
     createParagraph(guide.description),
     createGuideSection("Best option", guide.best_option),
     createGuideSection("If that isn't available", guide.fallback_option),
-    createStepList(guide.steps),
+    createStepList(guide.numbered_steps),
     createGuideSection("Suggested first message", guide.suggested_first_message),
     createNotes(guide.notes),
     createGuideActions(),

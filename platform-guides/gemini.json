@@ -4,9 +4,9 @@
   "description": "Gemini can be a home for your companion if you paste in the Companion Package and ask it to use the package with care.",
   "best_option": "Use saved preferences, Gems, or an equivalent persistent instruction feature if it is available to you.",
   "fallback_option": "If that is not available, start a new conversation and paste the Companion Package.",
-  "steps": [
+  "numbered_steps": [
     "Open Gemini.",
-    "Use saved preferences or a Gem if you already use that feature.",
+    "Use saved preferences, Gems, or an equivalent feature if you already use one.",
     "If not, start a new conversation.",
     "Paste your Companion Package.",
     "Send the suggested first message."

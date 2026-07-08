@@ -4,9 +4,9 @@
   "description": "Most AI platforms can begin from your Companion Package if you paste it into the right place.",
   "best_option": "Look for memory, custom instructions, personalization, projects, saved profile, or a similar feature.",
   "fallback_option": "If none of those exist, begin a new conversation and paste the Companion Package.",
-  "steps": [
+  "numbered_steps": [
     "Open the AI platform you already use.",
-    "Look for a place that saves instructions or preferences.",
+    "Look for memory, custom instructions, personalization, projects, saved profile, or a similar feature.",
     "If you find one, paste your Companion Package there.",
     "If you do not find one, start a new conversation and paste your Companion Package.",
     "Send the suggested first message."
