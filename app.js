@@ -244,7 +244,7 @@ function renderPlatformGuide(guide) {
     createParagraph(guide.description),
     createGuideSection("Best option", guide.best_option),
     createGuideSection("If that isn't available", guide.fallback_option),
-    createStepList(guide.numbered_steps),
+    createStepList(guide.steps),
     createGuideSection("Suggested first message", guide.suggested_first_message),
     createNotes(guide.notes),
     createGuideActions(),
@@ -294,16 +294,12 @@ function createStepList(steps) {
 function createNotes(notes) {
   const section = document.createElement("section");
   const heading = document.createElement("h4");
-  const list = document.createElement("ul");
+  const paragraph = document.createElement("p");
 
   heading.textContent = "Notes";
-  notes.forEach((note) => {
-    const item = document.createElement("li");
-    item.textContent = note;
-    list.appendChild(item);
-  });
+  paragraph.textContent = notes;
 
-  section.append(heading, list);
+  section.append(heading, paragraph);
   return section;
 }
 

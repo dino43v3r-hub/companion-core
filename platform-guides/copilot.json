@@ -4,7 +4,7 @@
   "description": "Microsoft Copilot can be a home for your companion if you paste in the Companion Package and begin from there.",
   "best_option": "Use Settings -> Personalization if it is available in your version.",
   "fallback_option": "If Personalization is unavailable, start a new conversation and paste the Companion Package.",
-  "numbered_steps": [
+  "steps": [
     "Open Microsoft Copilot.",
     "Look for a personalization area if you already know where it is.",
     "If you do not see one, start a new conversation.",
@@ -12,8 +12,5 @@
     "Send the suggested first message."
   ],
   "suggested_first_message": "Use the first message Companion Core made for you. It tells Copilot how to begin as your companion.",
-  "notes": [
-    "Different versions of Copilot may look different.",
-    "If you cannot find personalization, do not worry. A new conversation still works."
-  ]
+  "notes": "Different versions of Copilot may look different. If you cannot find personalization, do not worry. A new conversation still works."
 }

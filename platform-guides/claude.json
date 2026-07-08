@@ -4,7 +4,7 @@
   "description": "Claude can be a home for your companion if you give it the Companion Package and ask it to keep learning naturally.",
   "best_option": "Use Project Instructions if they are available to you.",
   "fallback_option": "If projects are not available, begin a new conversation and paste the Companion Package.",
-  "numbered_steps": [
+  "steps": [
     "Open Claude.",
     "Start a new chat, or open a project if you already use one.",
     "Paste your Companion Package.",
@@ -12,8 +12,5 @@
     "Keep correcting or shaping the companion as you talk."
   ],
   "suggested_first_message": "Use the first message Companion Core made for you. It explains that the package is a beginning, not a final description.",
-  "notes": [
-    "A project can help keep the package nearby, but it is not required.",
-    "A regular chat is a good enough first home."
-  ]
+  "notes": "A project can help keep the package nearby, but it is not required. A regular chat is a good enough first home."
 }

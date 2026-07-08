@@ -4,7 +4,7 @@
   "description": "ChatGPT can be a home for your companion if you paste in the Companion Package and ask it to use the package gently.",
   "best_option": "Use Memory or Custom Instructions if they are available to you.",
   "fallback_option": "If those are not available, paste the Companion Package at the beginning of a new conversation.",
-  "numbered_steps": [
+  "steps": [
     "Open ChatGPT.",
     "Start a new conversation, or open memory/custom instructions if you already use them.",
     "Paste your Companion Package.",
@@ -12,8 +12,5 @@
     "If ChatGPT gets something wrong, correct it in plain language."
   ],
   "suggested_first_message": "Use the first message Companion Core made for you. It introduces you, names your companion, and asks the AI to treat the package as a starting point.",
-  "notes": [
-    "You do not need to set this up perfectly.",
-    "If a memory or instruction area is confusing, a normal new conversation is enough to begin."
-  ]
+  "notes": "You do not need to set this up perfectly. If a memory or instruction area is confusing, a normal new conversation is enough to begin."
 }
