@@ -372,7 +372,38 @@ textarea:focus {
   border-radius: 8px;
   background: var(--soft);
   color: var(--ink);
-  white-space: pre-wrap;
+}
+
+.handoff-instructions h3,
+.handoff-instructions h4,
+.handoff-instructions p {
+  margin-top: 0;
+}
+
+.handoff-instructions h3 {
+  margin-bottom: 14px;
+  font-size: clamp(1.35rem, 3vw, 1.8rem);
+  line-height: 1.2;
+}
+
+.handoff-instructions h4 {
+  margin-bottom: 6px;
+  font-size: 1.05rem;
+}
+
+.handoff-instructions section,
+.handoff-instructions .action-row {
+  margin-top: 18px;
+}
+
+.handoff-instructions ol,
+.handoff-instructions ul {
+  margin: 0;
+  padding-left: 1.4em;
+}
+
+.handoff-instructions li + li {
+  margin-top: 8px;
 }
 
 pre {

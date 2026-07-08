@@ -22,14 +22,6 @@ const warmReplies = [
   "I like the way you described that. What do you think made it feel worth remembering?"
 ];
 
-const platformInstructions = {
-  chatgpt: "Open ChatGPT. Start a new conversation or open custom instructions/memory if you use them. Paste your Companion Package. Then send the suggested first message.",
-  claude: "Open Claude. Start a new chat or project if you use one. Paste your Companion Package. Then send the suggested first message.",
-  copilot: "Open Microsoft Copilot. Start a new conversation. Paste your Companion Package. Then send the suggested first message.",
-  gemini: "Open Gemini. Start a new conversation. Paste your Companion Package. Then send the suggested first message.",
-  other: "Open the AI platform you use. Start a new conversation or open its saved instructions area if it has one. Paste your Companion Package. Then send the suggested first message."
-};
-
 const state = {
   step: "personName",
   personName: "",
@@ -87,7 +79,7 @@ copyMessageButton.addEventListener("click", () => {
 
 platformButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    showPlatformInstructions(button.dataset.platform);
+    showPlatformGuide(button.dataset.platform);
   });
 });
 
@@ -218,17 +210,125 @@ function buildFirstMessage() {
   return `Hello. My name is ${state.personName}. I would like you to become my AI companion named ${state.companionName}. Companion Core helped me create the Companion Package below. Please use it as a starting point, not a final description. Treat every observation as tentative. Continue learning naturally through our conversations, respect my corrections, and help me think rather than think for me.`;
 }
 
-function showPlatformInstructions(platform) {
-  const instruction = platformInstructions[platform];
-  const button = [...platformButtons].find((item) => item.dataset.platform === platform);
-  const platformName = button ? button.textContent : "your AI platform";
-
+async function showPlatformGuide(platform) {
   platformButtons.forEach((item) => {
     item.classList.toggle("selected", item.dataset.platform === platform);
   });
 
-  handoffInstructions.textContent = `${platformName}: ${instruction}\n\nYour next conversation starts there.`;
+  handoffInstructions.textContent = "Opening the guide...";
   handoffInstructions.classList.remove("hidden");
+
+  try {
+    const guide = await loadPlatformGuide(platform);
+    renderPlatformGuide(guide);
+  } catch (error) {
+    handoffInstructions.textContent = "I could not open that guide just now. You can still copy your Companion Package and paste it into the AI platform you use.\n\nYour next conversation starts there.";
+  }
+}
+
+async function loadPlatformGuide(platform) {
+  const response = await fetch(`platform-guides/${platform}.json`);
+
+  if (!response.ok) {
+    throw new Error(`Guide not found: ${platform}`);
+  }
+
+  return response.json();
+}
+
+function renderPlatformGuide(guide) {
+  handoffInstructions.replaceChildren();
+
+  handoffInstructions.append(
+    createHeading(guide.title),
+    createParagraph(guide.description),
+    createGuideSection("Best option", guide.best_option),
+    createGuideSection("If that isn't available", guide.fallback_option),
+    createStepList(guide.numbered_steps),
+    createGuideSection("Suggested first message", guide.suggested_first_message),
+    createNotes(guide.notes),
+    createGuideActions(),
+    createParagraph("Your next conversation starts there.")
+  );
+}
+
+function createHeading(text) {
+  const heading = document.createElement("h3");
+  heading.textContent = text;
+  return heading;
+}
+
+function createParagraph(text) {
+  const paragraph = document.createElement("p");
+  paragraph.textContent = text;
+  return paragraph;
+}
+
+function createGuideSection(title, text) {
+  const section = document.createElement("section");
+  const heading = document.createElement("h4");
+  const paragraph = document.createElement("p");
+
+  heading.textContent = title;
+  paragraph.textContent = text;
+  section.append(heading, paragraph);
+  return section;
+}
+
+function createStepList(steps) {
+  const section = document.createElement("section");
+  const heading = document.createElement("h4");
+  const list = document.createElement("ol");
+
+  heading.textContent = "Step-by-step instructions";
+  steps.forEach((step) => {
+    const item = document.createElement("li");
+    item.textContent = step;
+    list.appendChild(item);
+  });
+
+  section.append(heading, list);
+  return section;
+}
+
+function createNotes(notes) {
+  const section = document.createElement("section");
+  const heading = document.createElement("h4");
+  const list = document.createElement("ul");
+
+  heading.textContent = "Notes";
+  notes.forEach((note) => {
+    const item = document.createElement("li");
+    item.textContent = note;
+    list.appendChild(item);
+  });
+
+  section.append(heading, list);
+  return section;
+}
+
+function createGuideActions() {
+  const actions = document.createElement("div");
+  const packageButton = document.createElement("button");
+  const messageButton = document.createElement("button");
+
+  actions.className = "action-row";
+  packageButton.className = "primary-button";
+  packageButton.type = "button";
+  packageButton.textContent = "Copy my Companion Package";
+  packageButton.addEventListener("click", () => {
+    copyText(state.companionPackage, "Your Companion Package is copied.");
+  });
+
+  messageButton.className = "secondary-button";
+  messageButton.type = "button";
+  messageButton.textContent = "Copy the first message";
+  messageButton.addEventListener("click", () => {
+    copyText(state.firstMessage, "The first message is copied.");
+  });
+
+  actions.append(packageButton, messageButton);
+  return actions;
 }
 
 function copyText(text, successMessage) {
