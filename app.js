@@ -11,6 +11,9 @@ const copyMessageButton = document.querySelector("#copy-message-button");
 const copyStatus = document.querySelector("#copy-status");
 const handoffInstructions = document.querySelector("#handoff-instructions");
 const platformButtons = document.querySelectorAll(".platform-button");
+const flowError = document.querySelector("#flow-error");
+
+const flowErrorMessage = "Something didn’t open correctly. Please refresh and try again.";
 
 const stepOrder = [
   "personName",
@@ -31,16 +34,16 @@ const state = {
   firstMessage: ""
 };
 
-beginButton.addEventListener("click", () => {
+beginButton.addEventListener("click", () => runFlowStep(() => {
   welcomeScreen.classList.add("hidden");
   builderScreen.classList.remove("hidden");
   showStep("personName");
-});
+}));
 
 builderCards.forEach((card) => {
   card.addEventListener("submit", (event) => {
     event.preventDefault();
-    handleStep(card);
+    runFlowStep(() => handleStep(card));
   });
 });
 
@@ -67,9 +70,22 @@ copyMessageButton.addEventListener("click", () => {
 
 platformButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    showPlatformGuide(button.dataset.platform);
+    runFlowStep(() => showPlatformGuide(button.dataset.platform));
   });
 });
+
+function runFlowStep(action) {
+  try {
+    clearFlowError();
+    const result = action();
+
+    if (result && typeof result.catch === "function") {
+      result.catch((error) => showFlowError(error));
+    }
+  } catch (error) {
+    showFlowError(error);
+  }
+}
 
 function handleStep(card) {
   const step = card.dataset.step;
@@ -95,13 +111,22 @@ function showNextStep(currentStep) {
 }
 
 function showStep(step) {
+  const hasStep = Array.from(builderCards).some((card) => card.dataset.step === step);
+
+  if (!hasStep) {
+    throw new Error(`Unknown builder step: ${step}`);
+  }
+
   builderCards.forEach((card) => {
     const isCurrent = card.dataset.step === step;
     card.classList.toggle("hidden", !isCurrent);
 
     if (isCurrent) {
       const field = card.querySelector("input, textarea");
-      field.focus();
+
+      if (field) {
+        field.focus();
+      }
     }
   });
 
@@ -199,7 +224,13 @@ async function showPlatformGuide(platform) {
     item.classList.toggle("selected", item.dataset.platform === platform);
   });
 
-  revealPackage();
+  try {
+    revealPackage();
+  } catch (error) {
+    showFlowError(error);
+    return;
+  }
+
   handoffInstructions.textContent = "Opening the guide...";
   handoffInstructions.classList.remove("hidden");
 
@@ -211,6 +242,31 @@ async function showPlatformGuide(platform) {
     console.error("Could not load platform guide", { platform, error });
     handoffInstructions.textContent = "I could not open that guide just now. You can still copy your Companion Package and paste it into the AI platform you use.\n\nYour next conversation starts there.";
   }
+}
+
+function clearFlowError() {
+  if (!flowError) {
+    return;
+  }
+
+  flowError.textContent = "";
+  flowError.classList.add("hidden");
+}
+
+function showFlowError(error) {
+  console.error("Companion Builder flow failed", error);
+
+  if (!flowError) {
+    return;
+  }
+
+  builderCards.forEach((card) => {
+    card.classList.add("hidden");
+  });
+  handoffScreen.classList.add("hidden");
+  flowError.textContent = flowErrorMessage;
+  flowError.classList.remove("hidden");
+  flowError.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function revealPackage() {

@@ -27,6 +27,8 @@
       </section>
 
       <section id="builder-screen" class="builder-screen hidden" aria-live="polite">
+        <p id="flow-error" class="flow-error hidden" role="alert"></p>
+
         <form class="builder-card" data-step="personName">
           <p class="eyebrow">Companion Builder</p>
           <label for="person-name">What would you like me to call you?</label>
@@ -82,8 +84,6 @@
             <button class="platform-button" type="button" data-platform="other">Other</button>
           </div>
 
-          <div id="handoff-instructions" class="handoff-instructions hidden" aria-live="polite"></div>
-
           <section id="package-panel" class="package-panel hidden" aria-labelledby="package-title">
             <h2 id="package-title">Companion Package v0.1</h2>
             <p class="package-callout">This is only the beginning.</p>
@@ -98,6 +98,8 @@
             </div>
             <p id="copy-status" class="copy-status" aria-live="polite"></p>
           </section>
+
+          <div id="handoff-instructions" class="handoff-instructions hidden" aria-live="polite"></div>
         </section>
       </section>
     </main>
