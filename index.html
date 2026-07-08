@@ -16,12 +16,12 @@
           </span>
           <span class="chair chair-right"></span>
         </div>
-        <h1 id="welcome-title">Before we build your companion…</h1>
-        <p class="welcome-subheadline">Let’s spend a few minutes talking.</p>
+        <h1 id="welcome-title">Before we build your companion...</h1>
+        <p class="welcome-subheadline">Let's spend a few minutes talking.</p>
         <p class="welcome-copy">
           There are no right answers.<br>
           Just a conversation.<br>
-          By the end, you’ll have the first version of your Companion Profile.
+          By the end, you'll have the first version of your Companion Package.
         </p>
         <button id="begin-button" class="primary-button" type="button">Let's start the conversation</button>
       </section>
@@ -38,14 +38,34 @@
           <label for="reply-input">What would you like to share?</label>
           <div class="input-row">
             <textarea id="reply-input" rows="3" placeholder="A sentence or two is enough. More is welcome, too."></textarea>
-            <button class="send-button" type="submit">Share</button>
+            <button class="send-button" type="submit">Share this</button>
           </div>
         </form>
 
         <section id="profile-card" class="profile-card hidden" aria-labelledby="profile-title">
-          <h2 id="profile-title">Companion Profile v0.1</h2>
+          <h2 id="profile-title">Companion Package v0.1</h2>
           <pre id="profile-text"></pre>
-          <button id="download-button" class="primary-button" type="button">Keep a copy</button>
+          <div class="action-row">
+            <button id="copy-package-button" class="primary-button" type="button">Copy my Companion Package</button>
+            <button id="copy-message-button" class="secondary-button" type="button">Copy the first message</button>
+            <button id="download-button" class="secondary-button" type="button">Take my companion with me</button>
+          </div>
+          <p id="copy-status" class="copy-status" aria-live="polite"></p>
+        </section>
+
+        <section id="handoff-card" class="handoff-card hidden" aria-labelledby="handoff-title">
+          <h2 id="handoff-title">Your companion is ready for a home.</h2>
+          <p>Companion Core does not keep your companion here. You choose where your companion will live.</p>
+
+          <div class="platform-buttons" aria-label="Choose an AI platform">
+            <button class="platform-button" type="button" data-platform="chatgpt">ChatGPT</button>
+            <button class="platform-button" type="button" data-platform="claude">Claude</button>
+            <button class="platform-button" type="button" data-platform="copilot">Microsoft Copilot</button>
+            <button class="platform-button" type="button" data-platform="gemini">Gemini</button>
+            <button class="platform-button" type="button" data-platform="other">Other</button>
+          </div>
+
+          <div id="handoff-instructions" class="handoff-instructions hidden" aria-live="polite"></div>
         </section>
       </section>
     </main>

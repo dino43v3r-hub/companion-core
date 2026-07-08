@@ -4,13 +4,14 @@
 
 - Static GitHub Pages friendly onboarding
 - Mock AI conversation
-- Companion Profile v0.1
-- Text file download
+- Companion Package v0.1
+- Platform handoff instructions
+- Text file download and copy buttons
 
 ## Next
 
 - Improve the conversation flow
-- Make the profile more useful while staying gentle
+- Make the package more useful while staying gentle
 - Add careful storage options only when needed
 - Connect a real AI backend later
 

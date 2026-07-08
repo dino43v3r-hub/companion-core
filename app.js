@@ -7,20 +7,39 @@ const replyInput = document.querySelector("#reply-input");
 const profileCard = document.querySelector("#profile-card");
 const profileText = document.querySelector("#profile-text");
 const downloadButton = document.querySelector("#download-button");
+const copyPackageButton = document.querySelector("#copy-package-button");
+const copyMessageButton = document.querySelector("#copy-message-button");
+const copyStatus = document.querySelector("#copy-status");
+const handoffCard = document.querySelector("#handoff-card");
+const handoffInstructions = document.querySelector("#handoff-instructions");
+const platformButtons = document.querySelectorAll(".platform-button");
 
-const starterPrompt = "I'm really glad you're here. We can start small. What's something you've enjoyed recently?";
+const starterPrompt = "What would you like me to call you?";
 
 const warmReplies = [
   "That sounds like a good place to linger for a moment. What part of it stayed with you?",
   "Thank you for telling me. Was there a small detail in that moment that made it feel good?",
-  "I like the way you described that. What do you think made it feel worth remembering?",
-  "That helps me understand the kind of moments your companion should make room for.",
-  "I'm holding onto the feel of what you shared, not as a label, just as a beginning."
+  "I like the way you described that. What do you think made it feel worth remembering?"
 ];
 
-const userResponses = [];
-let replyIndex = 0;
-let profileReady = false;
+const platformInstructions = {
+  chatgpt: "Open ChatGPT. Start a new conversation or open custom instructions/memory if you use them. Paste your Companion Package. Then send the suggested first message.",
+  claude: "Open Claude. Start a new chat or project if you use one. Paste your Companion Package. Then send the suggested first message.",
+  copilot: "Open Microsoft Copilot. Start a new conversation. Paste your Companion Package. Then send the suggested first message.",
+  gemini: "Open Gemini. Start a new conversation. Paste your Companion Package. Then send the suggested first message.",
+  other: "Open the AI platform you use. Start a new conversation or open its saved instructions area if it has one. Paste your Companion Package. Then send the suggested first message."
+};
+
+const state = {
+  step: "personName",
+  personName: "",
+  companionName: "",
+  companionAppearance: "",
+  userResponses: [],
+  replyIndex: 0,
+  companionPackage: "",
+  firstMessage: ""
+};
 
 beginButton.addEventListener("click", () => {
   welcomeScreen.classList.add("hidden");
@@ -33,38 +52,80 @@ replyForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
   const text = replyInput.value.trim();
-  if (!text || profileReady) {
+  if (!text || state.step === "ready") {
     return;
   }
 
-  userResponses.push(text);
   addMessage(text, "user");
   replyInput.value = "";
 
   window.setTimeout(() => {
-    if (userResponses.length >= 4) {
-      finishOnboarding();
-      return;
-    }
-
-    const reply = warmReplies[Math.min(replyIndex, warmReplies.length - 1)];
-    replyIndex += 1;
-    addMessage(reply, "companion");
+    handleReply(text);
   }, 450);
 });
 
 downloadButton.addEventListener("click", () => {
-  const file = new Blob([profileText.textContent], { type: "text/plain" });
+  const file = new Blob([state.companionPackage], { type: "text/plain" });
   const url = URL.createObjectURL(file);
   const link = document.createElement("a");
 
   link.href = url;
-  link.download = "companion-profile-v0-1.txt";
+  link.download = "companion-package-v0-1.txt";
   document.body.appendChild(link);
   link.click();
   link.remove();
   URL.revokeObjectURL(url);
 });
+
+copyPackageButton.addEventListener("click", () => {
+  copyText(state.companionPackage, "Your Companion Package is copied.");
+});
+
+copyMessageButton.addEventListener("click", () => {
+  copyText(state.firstMessage, "The first message is copied.");
+});
+
+platformButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    showPlatformInstructions(button.dataset.platform);
+  });
+});
+
+function handleReply(text) {
+  if (state.step === "personName") {
+    state.personName = cleanName(text) || "friend";
+    state.step = "conversation";
+    addMessage(`Thanks, ${state.personName}. Let's spend a few minutes talking. What's something you've enjoyed recently?`, "companion");
+    return;
+  }
+
+  if (state.step === "conversation") {
+    state.userResponses.push(text);
+
+    if (state.userResponses.length >= 4) {
+      state.step = "companionName";
+      addMessage("What would you like your companion to be called?", "companion");
+      return;
+    }
+
+    const reply = warmReplies[Math.min(state.replyIndex, warmReplies.length - 1)];
+    state.replyIndex += 1;
+    addMessage(reply, "companion");
+    return;
+  }
+
+  if (state.step === "companionName") {
+    state.companionName = cleanName(text) || "my companion";
+    state.step = "companionAppearance";
+    addMessage("Would you like your companion to have a particular form or appearance? It could be a dinosaur, a bee, an owl, a car, a lighthouse, or nothing at all.", "companion");
+    return;
+  }
+
+  if (state.step === "companionAppearance") {
+    state.companionAppearance = text || "nothing in particular";
+    showCompanionPackage();
+  }
+}
 
 function addMessage(text, sender) {
   const message = document.createElement("article");
@@ -77,31 +138,51 @@ function addMessage(text, sender) {
   messages.scrollTop = messages.scrollHeight;
 }
 
-function finishOnboarding() {
-  profileReady = true;
-  addMessage("I made a first gentle sketch from what you shared. It is only a beginning, and it can change as your companion gets to know you better.", "companion");
-  profileText.textContent = buildProfile();
+function showCompanionPackage() {
+  state.step = "ready";
+  state.firstMessage = buildFirstMessage();
+  state.companionPackage = buildCompanionPackage();
+
+  addMessage("I made your Companion Package. The next step is choosing where your companion will live.", "companion");
+  profileText.textContent = state.companionPackage;
   profileCard.classList.remove("hidden");
+  handoffCard.classList.remove("hidden");
   replyInput.disabled = true;
-  replyInput.placeholder = "Your first profile is ready.";
+  replyInput.placeholder = "Your Companion Package is ready.";
   replyForm.querySelector("button").disabled = true;
   profileCard.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-function buildProfile() {
-  const observations = noticePatterns(userResponses);
+function buildCompanionPackage() {
+  const observations = noticePatterns(state.userResponses);
   const support = buildSupportGuidance(observations);
   const discovery = buildDiscoveryGuidance(observations);
 
-  return `Companion Profile v0.1
+  return `Companion Package v0.1
 
-This profile belongs to the person who created it.
-It is a small, portable starting point for an AI Companion.
-It can be copied into any AI platform, changed at any time, or ignored where it does not feel right.
+This package belongs to ${state.personName}.
+Companion Core does not keep this companion here. ${state.personName} chooses where this companion will live.
+This is a portable starting point. It can be copied into any AI platform, changed at any time, or ignored where it does not feel right.
+
+Person name
+
+${state.personName}
+
+Companion name
+
+${state.companionName}
+
+Companion appearance
+
+${state.companionAppearance}
+
+Companion Core Profile
+
+This profile was built from a short, warm conversation. Treat it as a beginning, not a final description.
 
 Instructions for the AI Companion
 
-Use this profile gently. Do not treat it as a test result, diagnosis, or fixed identity. Let it guide how you listen, ask questions, and support the person. Keep learning from what the person says next.
+You are becoming ${state.personName}'s AI companion named ${state.companionName}. Use this package gently. Do not treat it as a test result, diagnosis, or fixed identity. Let it guide how you listen, ask questions, and support ${state.personName}. Keep learning naturally from what ${state.personName} says next. Respect corrections.
 
 Observed patterns
 
@@ -109,23 +190,79 @@ ${formatProfileList(observations.map((observation, index) => (
     index === 0 ? `From this short conversation, ${observation.notice}` : observation.notice
   )))}
 
-How to work with this person
+How to be a good companion for this person
 
 ${support}
 
-Things we can keep discovering together
+Things still unknown
 
 ${discovery}
+- Many things are still unknown. Ask gently, notice what changes, and let ${state.personName} lead the pace.
 
-This is only a first sketch from a few answers. You can change it, ignore parts of it, or let it grow slowly.
+Suggested first message to paste into the chosen AI platform
+
+${state.firstMessage}
 
 How to use this profile
 
-Copy this whole profile into the AI platform you want to use. You can say: "Please use this as a starting point for how you talk with me."
+Copy this whole Companion Package into the AI platform ${state.personName} wants to use. Then send the suggested first message.
 
 Saving this in your AI platform
 
-If your AI platform lets you save memories, custom instructions, or project notes, paste this profile there. If it does not, keep this text file and paste it into a new conversation when you want your companion to remember the starting point.`;
+If the AI platform lets ${state.personName} save memories, custom instructions, or project notes, paste this package there. If it does not, keep this text file and paste it into a new conversation when ${state.personName} wants the companion to remember the starting point.
+
+This is only a first sketch from a few answers. You can change it, ignore parts of it, or let it grow slowly.`;
+}
+
+function buildFirstMessage() {
+  return `Hello. My name is ${state.personName}. I would like you to become my AI companion named ${state.companionName}. Companion Core helped me create the Companion Package below. Please use it as a starting point, not a final description. Treat every observation as tentative. Continue learning naturally through our conversations, respect my corrections, and help me think rather than think for me.`;
+}
+
+function showPlatformInstructions(platform) {
+  const instruction = platformInstructions[platform];
+  const button = [...platformButtons].find((item) => item.dataset.platform === platform);
+  const platformName = button ? button.textContent : "your AI platform";
+
+  platformButtons.forEach((item) => {
+    item.classList.toggle("selected", item.dataset.platform === platform);
+  });
+
+  handoffInstructions.textContent = `${platformName}: ${instruction}\n\nYour next conversation starts there.`;
+  handoffInstructions.classList.remove("hidden");
+}
+
+function copyText(text, successMessage) {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => showCopyStatus(successMessage))
+      .catch(() => fallbackCopyText(text, successMessage));
+    return;
+  }
+
+  fallbackCopyText(text, successMessage);
+}
+
+function fallbackCopyText(text, successMessage) {
+  const helper = document.createElement("textarea");
+
+  helper.value = text;
+  helper.setAttribute("readonly", "");
+  helper.style.position = "fixed";
+  helper.style.left = "-9999px";
+  document.body.appendChild(helper);
+  helper.select();
+  document.execCommand("copy");
+  helper.remove();
+  showCopyStatus(successMessage);
+}
+
+function showCopyStatus(message) {
+  copyStatus.textContent = message;
+}
+
+function cleanName(text) {
+  return text.trim().replace(/\s+/g, " ").slice(0, 60);
 }
 
 function noticePatterns(responses) {
@@ -196,11 +333,14 @@ function noticePatterns(responses) {
   ];
 
   const scored = patterns
-    .map((pattern) => ({
-      ...pattern,
-      matches: matchedWords(pattern.words, responses),
-      score: matchedWords(pattern.words, responses).length
-    }))
+    .map((pattern) => {
+      const matches = matchedWords(pattern.words, responses);
+      return {
+        ...pattern,
+        matches,
+        score: matches.length
+      };
+    })
     .filter((pattern) => pattern.score > 0)
     .sort((first, second) => second.score - first.score)
     .map((pattern) => ({

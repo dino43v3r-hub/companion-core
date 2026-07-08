@@ -1,8 +1,8 @@
 # Companion Core
 
-Companion Core is an open-source Companion Builder that helps people create their own AI companion through natural conversation instead of questionnaires. Companion profiles belong to the person and can be used across AI platforms.
+Companion Core is an open-source Companion Builder that helps people create their own AI companion through natural conversation instead of questionnaires. Companion packages belong to the person and can be used across AI platforms.
 
-This first MVP is a simple onboarding experience. A visitor can begin a warm conversation, share a few natural responses, and receive a small Companion Profile v0.1 they can download.
+This first MVP is a simple welcome and handoff experience. A visitor can begin a warm conversation, share a few natural responses, name their companion, receive Companion Package v0.1, and choose where to take it next.
 
 This version is intentionally simple:
 
@@ -47,4 +47,4 @@ docs/
 
 ## MVP Goal
 
-A person visits the site, clicks Begin, has a gentle onboarding conversation, and receives Companion Profile v0.1.
+A person visits the site, starts a gentle conversation, receives Companion Package v0.1, and knows how to introduce that package into the AI platform they already use.

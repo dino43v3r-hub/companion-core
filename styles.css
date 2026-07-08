@@ -215,14 +215,27 @@ h2 {
 }
 
 .primary-button,
-.send-button {
+.secondary-button,
+.send-button,
+.platform-button {
   min-height: 66px;
-  border: 0;
   border-radius: 8px;
-  background: var(--accent);
-  color: white;
   font-weight: 700;
   padding: 17px 30px;
+}
+
+.primary-button,
+.send-button {
+  border: 0;
+  background: var(--accent);
+  color: white;
+}
+
+.secondary-button,
+.platform-button {
+  border: 2px solid var(--accent);
+  background: var(--paper);
+  color: var(--accent-dark);
 }
 
 .primary-button:hover,
@@ -230,6 +243,16 @@ h2 {
 .primary-button:focus-visible,
 .send-button:focus-visible {
   background: var(--accent-dark);
+}
+
+.secondary-button:hover,
+.platform-button:hover,
+.secondary-button:focus-visible,
+.platform-button:focus-visible,
+.platform-button.selected {
+  background: var(--soft);
+  border-color: var(--accent-dark);
+  color: var(--accent-dark);
 }
 
 .conversation-screen {
@@ -311,13 +334,45 @@ textarea:focus {
   border-color: var(--accent);
 }
 
-.profile-card {
+.profile-card,
+.handoff-card {
   margin-top: 32px;
   padding: clamp(24px, 4vw, 38px);
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: 8px;
   box-shadow: var(--shadow);
+}
+
+.handoff-card p {
+  max-width: 760px;
+  margin: 0 0 22px;
+  color: var(--muted);
+}
+
+.action-row,
+.platform-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.copy-status {
+  min-height: 1.6em;
+  margin: 16px 0 0;
+  color: var(--accent-dark);
+  font-weight: 700;
+}
+
+.handoff-instructions {
+  margin-top: 22px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--soft);
+  color: var(--ink);
+  white-space: pre-wrap;
 }
 
 pre {
@@ -385,7 +440,15 @@ pre {
   }
 
   .send-button,
-  .primary-button {
+  .primary-button,
+  .secondary-button,
+  .platform-button {
     width: 100%;
+  }
+
+  .action-row,
+  .platform-buttons {
+    display: grid;
+    grid-template-columns: 1fr;
   }
 }
