@@ -2,7 +2,8 @@ const welcomeScreen = document.querySelector("#welcome-screen");
 const builderScreen = document.querySelector("#builder-screen");
 const beginButton = document.querySelector("#begin-button");
 const builderCards = document.querySelectorAll(".builder-card");
-const packageScreen = document.querySelector("#package-screen");
+const handoffScreen = document.querySelector("#handoff-screen");
+const packagePanel = document.querySelector("#package-panel");
 const profileText = document.querySelector("#profile-text");
 const downloadButton = document.querySelector("#download-button");
 const copyPackageButton = document.querySelector("#copy-package-button");
@@ -77,7 +78,7 @@ function handleStep(card) {
   if (step === "companionCreation") {
     state.companionName = cleanText(data.get("companionName")) || "my companion";
     state.companionAppearance = cleanText(data.get("companionAppearance")) || "something still taking shape";
-    showPackage();
+    showHandoff();
     return;
   }
 
@@ -104,10 +105,10 @@ function showStep(step) {
     }
   });
 
-  packageScreen.classList.add("hidden");
+  handoffScreen.classList.add("hidden");
 }
 
-function showPackage() {
+function showHandoff() {
   state.firstMessage = buildFirstMessage();
   state.companionPackage = buildCompanionPackage();
   profileText.textContent = state.companionPackage;
@@ -116,8 +117,15 @@ function showPackage() {
     card.classList.add("hidden");
   });
 
-  packageScreen.classList.remove("hidden");
-  packageScreen.scrollIntoView({ behavior: "smooth", block: "start" });
+  packagePanel.classList.add("hidden");
+  handoffInstructions.classList.add("hidden");
+  handoffInstructions.replaceChildren();
+  platformButtons.forEach((button) => {
+    button.classList.remove("selected");
+  });
+
+  handoffScreen.classList.remove("hidden");
+  handoffScreen.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function buildCompanionPackage() {
@@ -191,6 +199,7 @@ async function showPlatformGuide(platform) {
     item.classList.toggle("selected", item.dataset.platform === platform);
   });
 
+  revealPackage();
   handoffInstructions.textContent = "Opening the guide...";
   handoffInstructions.classList.remove("hidden");
 
@@ -202,6 +211,11 @@ async function showPlatformGuide(platform) {
     console.error("Could not load platform guide", { platform, error });
     handoffInstructions.textContent = "I could not open that guide just now. You can still copy your Companion Package and paste it into the AI platform you use.\n\nYour next conversation starts there.";
   }
+}
+
+function revealPackage() {
+  packagePanel.classList.remove("hidden");
+  packagePanel.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 async function loadPlatformGuide(platform) {

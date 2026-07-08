@@ -265,7 +265,8 @@ h2 {
 }
 
 .builder-card,
-.package-screen {
+.package-screen,
+.package-panel {
   width: 100%;
   padding: clamp(28px, 5vw, 54px);
   background: rgba(255, 250, 242, 0.88);
@@ -391,7 +392,8 @@ input[type="text"]:focus {
 }
 
 .profile-card,
-.handoff-card {
+.handoff-card,
+.package-panel {
   margin-top: 32px;
   padding: clamp(24px, 4vw, 38px);
   background: var(--paper);
