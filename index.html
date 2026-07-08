@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Companion Core</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section id="welcome-screen" class="welcome-screen" aria-labelledby="welcome-title">
+        <p class="eyebrow">Companion Core</p>
+        <h1 id="welcome-title">Let your companion begin by getting to know you.</h1>
+        <p class="welcome-copy">
+          Take a few quiet minutes with a warm guide. There are no right answers here.
+        </p>
+        <button id="begin-button" class="primary-button" type="button">Begin gently</button>
+      </section>
+
+      <section id="conversation-screen" class="conversation-screen hidden" aria-labelledby="conversation-title">
+        <div class="conversation-header">
+          <p class="eyebrow">Companion Builder</p>
+          <h1 id="conversation-title">A gentle first conversation</h1>
+        </div>
+
+        <div id="messages" class="messages" aria-live="polite"></div>
+
+        <form id="reply-form" class="reply-form">
+          <label for="reply-input">What would you like to share?</label>
+          <div class="input-row">
+            <textarea id="reply-input" rows="3" placeholder="A sentence or two is enough. More is welcome, too."></textarea>
+            <button class="send-button" type="submit">Share</button>
+          </div>
+        </form>
+
+        <section id="profile-card" class="profile-card hidden" aria-labelledby="profile-title">
+          <h2 id="profile-title">Companion Profile v0.1</h2>
+          <pre id="profile-text"></pre>
+          <button id="download-button" class="primary-button" type="button">Keep a copy</button>
+        </section>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
