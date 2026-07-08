@@ -222,12 +222,13 @@ async function showPlatformGuide(platform) {
     const guide = await loadPlatformGuide(platform);
     renderPlatformGuide(guide);
   } catch (error) {
+    console.error("Could not load platform guide", { platform, error });
     handoffInstructions.textContent = "I could not open that guide just now. You can still copy your Companion Package and paste it into the AI platform you use.\n\nYour next conversation starts there.";
   }
 }
 
 async function loadPlatformGuide(platform) {
-  const response = await fetch(`platform-guides/${platform}.json`);
+  const response = await fetch(`./platform-guides/${platform}.json`);
 
   if (!response.ok) {
     throw new Error(`Guide not found: ${platform}`);
