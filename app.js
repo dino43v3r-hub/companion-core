@@ -1,60 +1,46 @@
 const welcomeScreen = document.querySelector("#welcome-screen");
-const conversationScreen = document.querySelector("#conversation-screen");
+const builderScreen = document.querySelector("#builder-screen");
 const beginButton = document.querySelector("#begin-button");
-const messages = document.querySelector("#messages");
-const replyForm = document.querySelector("#reply-form");
-const replyInput = document.querySelector("#reply-input");
-const replyButton = replyForm.querySelector("button");
-const profileCard = document.querySelector("#profile-card");
+const builderCards = document.querySelectorAll(".builder-card");
+const packageScreen = document.querySelector("#package-screen");
 const profileText = document.querySelector("#profile-text");
 const downloadButton = document.querySelector("#download-button");
 const copyPackageButton = document.querySelector("#copy-package-button");
 const copyMessageButton = document.querySelector("#copy-message-button");
 const copyStatus = document.querySelector("#copy-status");
-const handoffCard = document.querySelector("#handoff-card");
 const handoffInstructions = document.querySelector("#handoff-instructions");
 const platformButtons = document.querySelectorAll(".platform-button");
 
-const starterPrompt = "What would you like me to call you?";
-
-const warmReplies = [
-  "That sounds like a good place to linger for a moment. What part of it stayed with you?",
-  "Thank you for telling me. Was there a small detail in that moment that made it feel good?",
-  "I like the way you described that. What do you think made it feel worth remembering?"
+const stepOrder = [
+  "personName",
+  "recentJoy",
+  "futureHope",
+  "companionPurpose",
+  "companionCreation"
 ];
 
 const state = {
-  step: "personName",
   personName: "",
+  recentJoy: "",
+  futureHope: "",
+  companionPurpose: "",
   companionName: "",
   companionAppearance: "",
-  userResponses: [],
-  replyIndex: 0,
   companionPackage: "",
   firstMessage: ""
 };
 
 beginButton.addEventListener("click", () => {
   welcomeScreen.classList.add("hidden");
-  conversationScreen.classList.remove("hidden");
-  addMessage(starterPrompt, "companion");
-  replyInput.focus();
+  builderScreen.classList.remove("hidden");
+  showStep("personName");
 });
 
-replyForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-
-  const text = replyInput.value.trim();
-  if (!text || state.step === "ready") {
-    return;
-  }
-
-  addMessage(text, "user");
-  replyInput.value = "";
-
-  window.setTimeout(() => {
-    handleReply(text);
-  }, 450);
+builderCards.forEach((card) => {
+  card.addEventListener("submit", (event) => {
+    event.preventDefault();
+    handleStep(card);
+  });
 });
 
 downloadButton.addEventListener("click", () => {
@@ -84,75 +70,66 @@ platformButtons.forEach((button) => {
   });
 });
 
-function handleReply(text) {
-  if (state.step === "personName") {
-    state.personName = cleanName(text) || "friend";
-    state.step = "conversation";
-    addMessage(`Thanks, ${state.personName}. Let's spend a few minutes talking. What's something you've enjoyed recently?`, "companion");
+function handleStep(card) {
+  const step = card.dataset.step;
+  const data = new FormData(card);
+
+  if (step === "companionCreation") {
+    state.companionName = cleanText(data.get("companionName")) || "my companion";
+    state.companionAppearance = cleanText(data.get("companionAppearance")) || "something still taking shape";
+    showPackage();
     return;
   }
 
-  if (state.step === "conversation") {
-    state.userResponses.push(text);
+  state[step] = cleanText(data.get(step));
+  showNextStep(step);
+}
 
-    if (state.userResponses.length >= 4) {
-      state.step = "companionName";
-      addMessage("What would you like your companion to be called?", "companion");
-      return;
+function showNextStep(currentStep) {
+  const nextStep = stepOrder[stepOrder.indexOf(currentStep) + 1];
+
+  if (nextStep) {
+    showStep(nextStep);
+  }
+}
+
+function showStep(step) {
+  builderCards.forEach((card) => {
+    const isCurrent = card.dataset.step === step;
+    card.classList.toggle("hidden", !isCurrent);
+
+    if (isCurrent) {
+      const field = card.querySelector("input, textarea");
+      field.focus();
     }
+  });
 
-    const reply = warmReplies[Math.min(state.replyIndex, warmReplies.length - 1)];
-    state.replyIndex += 1;
-    addMessage(reply, "companion");
-    return;
-  }
-
-  if (state.step === "companionName") {
-    state.companionName = cleanName(text) || "my companion";
-    state.step = "companionAppearance";
-    replyButton.textContent = "Let's continue";
-    addMessage("There's no right answer to this question.\n\nWhen you picture your companion, what do you picture?", "companion");
-    return;
-  }
-
-  if (state.step === "companionAppearance") {
-    state.companionAppearance = text || "nothing in particular";
-    showCompanionPackage();
-  }
+  packageScreen.classList.add("hidden");
 }
 
-function addMessage(text, sender) {
-  const message = document.createElement("article");
-  const paragraph = document.createElement("p");
-
-  message.className = `message ${sender}`;
-  paragraph.textContent = text;
-  message.appendChild(paragraph);
-  messages.appendChild(message);
-  messages.scrollTop = messages.scrollHeight;
-}
-
-function showCompanionPackage() {
-  state.step = "ready";
+function showPackage() {
   state.firstMessage = buildFirstMessage();
   state.companionPackage = buildCompanionPackage();
-
-  addMessage("I made your Companion Package. The next step is choosing where your companion will live.", "companion");
   profileText.textContent = state.companionPackage;
-  profileCard.classList.remove("hidden");
-  handoffCard.classList.remove("hidden");
-  replyInput.disabled = true;
-  replyInput.placeholder = "Your Companion Package is ready.";
-  replyButton.disabled = true;
-  profileCard.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  builderCards.forEach((card) => {
+    card.classList.add("hidden");
+  });
+
+  packageScreen.classList.remove("hidden");
+  packageScreen.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function buildCompanionPackage() {
-  const observations = noticePatterns(state.userResponses);
+  const observations = noticePatterns();
   const support = buildSupportGuidance(observations);
-  const discovery = buildDiscoveryGuidance(observations);
+  const unknowns = buildUnknowns();
 
   return `Companion Package v0.1
+
+This is only the beginning.
+
+Oh... we're going to keep learning together.
 
 This package belongs to ${state.personName}.
 Companion Core does not keep this companion here. ${state.personName} chooses where this companion will live.
@@ -162,27 +139,29 @@ Person name
 
 ${state.personName}
 
+Something they enjoyed recently
+
+${state.recentJoy}
+
+Something they are looking forward to
+
+${state.futureHope}
+
+What they hope the companion helps them do
+
+${state.companionPurpose}
+
 Companion name
 
 ${state.companionName}
 
-Companion appearance
+How they picture the companion
 
 ${state.companionAppearance}
 
-Companion Core Profile
-
-This profile was built from a short, warm conversation. Treat it as a beginning, not a final description.
-
-Instructions for the AI Companion
-
-You are becoming ${state.personName}'s AI companion named ${state.companionName}. Use this package gently. Do not treat it as a test result, diagnosis, or fixed identity. Let it guide how you listen, ask questions, and support ${state.personName}. Keep learning naturally from what ${state.personName} says next. Respect corrections.
-
 Observed patterns
 
-${formatProfileList(observations.map((observation, index) => (
-    index === 0 ? `From this short conversation, ${observation.notice}` : observation.notice
-  )))}
+${formatProfileList(observations.map((observation) => observation.notice))}
 
 How to be a good companion for this person
 
@@ -190,20 +169,15 @@ ${support}
 
 Things still unknown
 
-${discovery}
-- Many things are still unknown. Ask gently, notice what changes, and let ${state.personName} lead the pace.
+${unknowns}
 
-Suggested first message to paste into the chosen AI platform
+Suggested first message
 
 ${state.firstMessage}
 
-How to use this profile
+Platform handoff
 
-Copy this whole Companion Package into the AI platform ${state.personName} wants to use. Then send the suggested first message.
-
-Saving this in your AI platform
-
-If the AI platform lets ${state.personName} save memories, custom instructions, or project notes, paste this package there. If it does not, keep this text file and paste it into a new conversation when ${state.personName} wants the companion to remember the starting point.
+Choose the AI platform ${state.personName} already uses. Paste this Companion Package there, then send the suggested first message.
 
 This is only a first sketch from a few answers. You can change it, ignore parts of it, or let it grow slowly.`;
 }
@@ -367,157 +341,96 @@ function showCopyStatus(message) {
   copyStatus.textContent = message;
 }
 
-function cleanName(text) {
-  return text.trim().replace(/\s+/g, " ").slice(0, 60);
+function cleanText(text) {
+  return String(text || "").trim().replace(/\s+/g, " ").slice(0, 600);
 }
 
-function noticePatterns(responses) {
+function noticePatterns() {
+  const observations = [
+    buildJoyObservation(),
+    buildHopeObservation(),
+    buildPurposeObservation()
+  ];
+  const extra = buildKeywordObservation();
+
+  if (extra) {
+    observations.push(extra);
+  }
+
+  return observations;
+}
+
+function buildJoyObservation() {
+  return {
+    id: "recentJoy",
+    notice: `When ${state.personName} talked about enjoying "${shorten(state.recentJoy)}," one early pattern is that small real moments may be worth noticing.`,
+    support: `Begin with the real details ${state.personName} shares, especially ordinary moments like "${shorten(state.recentJoy)}."`
+  };
+}
+
+function buildHopeObservation() {
+  return {
+    id: "futureHope",
+    notice: `Looking forward to "${shorten(state.futureHope)}" may point toward what gives ${state.personName} energy or hope right now.`,
+    support: `When the conversation turns toward the future, connect it gently to "${shorten(state.futureHope)}" and ask what would make that feel possible.`
+  };
+}
+
+function buildPurposeObservation() {
+  return {
+    id: "companionPurpose",
+    notice: `${state.personName} hopes this companion can help with "${shorten(state.companionPurpose)}," so support should stay connected to that purpose.`,
+    support: `Be useful in ways that serve "${shorten(state.companionPurpose)}," without taking over or deciding for ${state.personName}.`
+  };
+}
+
+function buildKeywordObservation() {
+  const text = `${state.recentJoy} ${state.futureHope} ${state.companionPurpose}`.toLowerCase();
   const patterns = [
     {
-      id: "serving",
-      words: ["help", "helped", "support", "serve", "service", "volunteer", "care", "cared", "neighbor", "church", "community"],
-      notice: (matches) => `when you mentioned ${formatMatches(matches)}, one early pattern is that meaning may show up when your time or attention helps someone else.`,
-      support: "When we explore ideas together, it may help to connect them back to the people they could serve.",
-      discovery: "We can keep noticing which kinds of care, service, or encouragement feel most worth your energy."
+      id: "relationships",
+      words: ["family", "friend", "daughter", "son", "grand", "wife", "husband", "people", "together"],
+      notice: `Relationships may matter here; ${state.personName} mentioned people or shared life in these answers.`,
+      support: "Make room for the people and relationships that show up in the conversation."
     },
     {
       id: "making",
-      words: ["build", "built", "make", "made", "fix", "fixed", "repair", "create", "created", "cook", "cooked", "garden", "sew", "wood", "project"],
-      notice: (matches) => `when you talked about ${formatMatches(matches)}, you seemed to connect meaning with making something real, useful, or cared for.`,
-      support: "I should keep our conversations practical, with room to turn thoughts into next steps when that feels helpful.",
-      discovery: "We can keep discovering what kinds of making, fixing, or shaping give you a sense of satisfaction."
-    },
-    {
-      id: "relationships",
-      words: ["family", "daughter", "son", "grand", "grandchild", "grandkids", "wife", "husband", "friend", "friends", "mother", "father", "sister", "brother"],
-      notice: (matches) => `when you mentioned ${formatMatches(matches)}, you seemed to place real meaning in relationships and shared moments.`,
-      support: "I should make space for the people in your stories and remember that everyday moments with them may carry real weight.",
-      discovery: "We can keep noticing which relationships, memories, and shared routines you want your companion to understand."
-    },
-    {
-      id: "curiosity",
-      words: ["wonder", "curious", "learn", "learned", "read", "book", "idea", "ideas", "why", "how", "question", "thinking", "understand"],
-      notice: (matches) => `when you brought up ${formatMatches(matches)}, you seemed to enjoy thinking things through rather than rushing past the idea.`,
-      support: "When we talk through ideas, I should move at a steady pace and help connect the thought to what matters in daily life.",
-      discovery: "We can keep discovering which questions are interesting enough to sit with for a while."
-    },
-    {
-      id: "humor",
-      words: ["laugh", "laughed", "funny", "joke", "joked", "humor", "silly", "smile", "smiled"],
-      notice: (matches) => `when you mentioned ${formatMatches(matches)}, humor seemed like one way moments become lighter, warmer, or easier to share.`,
-      support: "I should leave room for a little lightness when it fits, without forcing cheerfulness.",
-      discovery: "We can keep noticing what kinds of humor feel natural and welcome."
-    },
-    {
-      id: "ease",
-      words: ["easy", "easier", "simple", "simpler", "organize", "organized", "plan", "planned", "problem", "solve", "solved", "useful", "practical"],
-      notice: (matches) => `when you mentioned ${formatMatches(matches)}, you seemed to value practical ways to make life a little easier or more workable.`,
-      support: "I should help sort ideas into plain next steps while still leaving room for the bigger reason behind them.",
-      discovery: "We can keep discovering what kinds of support would make ordinary tasks feel lighter."
-    },
-    {
-      id: "story",
-      words: ["story", "remember", "remembered", "memory", "years", "used to", "when i", "told", "shared"],
-      notice: (matches) => `when you shared ${formatMatches(matches)}, you seemed to understand moments through story, memory, or the details around what happened.`,
-      support: "I should listen for the story around an answer instead of trying to rush to the point.",
-      discovery: "We can keep noticing which memories feel important to return to gently."
-    },
-    {
-      id: "ordinary",
-      words: ["coffee", "morning", "walk", "outside", "porch", "music", "meal", "dinner", "breakfast", "tea", "sun", "quiet", "home"],
-      notice: (matches) => `when you mentioned ${formatMatches(matches)}, ordinary moments seemed to carry more meaning than they first appear to.`,
-      support: "I should treat small daily details as worth noticing, not as filler before the important part.",
-      discovery: "We can keep discovering which small routines, places, and sounds help a day feel good."
+      words: ["build", "make", "create", "fix", "cook", "garden", "project", "write", "paint"],
+      notice: `Making or shaping something real may matter to ${state.personName}.`,
+      support: "Help turn ideas into small, practical steps when that feels welcome."
     },
     {
       id: "calm",
-      words: ["calm", "peace", "peaceful", "quiet", "slow", "gentle", "rest", "rested", "still"],
-      notice: (matches) => `when you used words like ${formatMatches(matches)}, you may prefer conversation that has room to breathe and does not push too quickly.`,
-      support: "I should keep a calm pace, ask one thing at a time, and give you space to answer in your own words.",
-      discovery: "We can keep noticing what pace and tone help conversation feel comfortable."
+      words: ["calm", "quiet", "peace", "peaceful", "slow", "gentle", "rest"],
+      notice: `${state.personName} may value calm space and a pace that does not rush.`,
+      support: "Keep the tone calm, ask one thing at a time, and leave room to think."
+    },
+    {
+      id: "thinking",
+      words: ["think", "learn", "understand", "idea", "ideas", "plan", "solve", "question"],
+      notice: `${state.personName} may want a companion that helps think things through.`,
+      support: "Help sort thoughts clearly, but do not think for the person."
     }
   ];
 
-  const scored = patterns
-    .map((pattern) => {
-      const matches = matchedWords(pattern.words, responses);
-      return {
-        ...pattern,
-        matches,
-        score: matches.length
-      };
-    })
-    .filter((pattern) => pattern.score > 0)
-    .sort((first, second) => second.score - first.score)
-    .map((pattern) => ({
-      ...pattern,
-      notice: pattern.notice(pattern.matches)
-    }));
-
-  const fallback = [
-    {
-      id: "ordinary",
-      notice: "you seem to give ordinary moments enough attention for them to become meaningful.",
-      support: "I should begin with everyday language and let larger ideas appear naturally from what you share.",
-      discovery: "We can keep noticing which parts of daily life feel worth remembering."
-    },
-    {
-      id: "story",
-      notice: "you may appreciate being heard through the shape of what happened, not just the short answer.",
-      support: "I should listen for details and connections instead of rushing to summarize you.",
-      discovery: "We can keep discovering which stories feel important to hold onto."
-    },
-    {
-      id: "calm",
-      notice: "you may prefer a companion that stays calm, plainspoken, and patient.",
-      support: "I should ask gentle follow-up questions and give you space to decide what matters.",
-      discovery: "We can keep learning what makes the conversation feel comfortable and useful."
-    }
-  ];
-
-  return fillObservations(scored, fallback);
-}
-
-function matchedWords(words, responses) {
-  const matches = responses.reduce((found, response) => {
-    const text = response.toLowerCase();
-    return [...found, ...words.filter((word) => text.includes(word))];
-  }, []);
-
-  return [...new Set(matches)];
-}
-
-function formatMatches(matches) {
-  const readable = matches.slice(0, 2);
-
-  if (readable.length === 1) {
-    return readable[0];
-  }
-
-  return `${readable[0]} and ${readable[1]}`;
-}
-
-function fillObservations(scored, fallback) {
-  const observations = [...scored];
-
-  fallback.forEach((item) => {
-    if (observations.length < 3 && !observations.some((pattern) => pattern.id === item.id)) {
-      observations.push(item);
-    }
-  });
-
-  return observations.slice(0, 3);
+  return patterns.find((pattern) => pattern.words.some((word) => text.includes(word)));
 }
 
 function buildSupportGuidance(observations) {
-  return formatProfileList(observations
-    .slice(0, 2)
-    .map((observation) => observation.support));
+  return formatProfileList(observations.map((observation) => observation.support));
 }
 
-function buildDiscoveryGuidance(observations) {
-  return formatProfileList(observations
-    .map((observation) => observation.discovery));
+function buildUnknowns() {
+  return formatProfileList([
+    `What helps ${state.personName} feel most understood.`,
+    `How ${state.companionName} should respond when something feels hard.`,
+    `Which parts of "${shorten(state.companionPurpose)}" matter most over time.`
+  ]);
+}
+
+function shorten(text) {
+  const cleaned = cleanText(text);
+  return cleaned.length > 90 ? `${cleaned.slice(0, 87)}...` : cleaned;
 }
 
 function formatProfileList(items) {
