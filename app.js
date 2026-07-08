@@ -89,88 +89,173 @@ function finishOnboarding() {
 }
 
 function buildProfile() {
-  const combined = userResponses.join(" ").toLowerCase();
-  const details = noticeDetails(userResponses);
-  const tone = noticeTone(combined);
-  const pace = noticePace(userResponses);
-  const interests = noticeInterests(combined);
+  const observations = noticePatterns(userResponses);
+  const support = buildSupportGuidance(observations);
+  const discovery = buildDiscoveryGuidance(observations);
 
   return `Companion Profile v0.1
 
 What I'm beginning to notice
 
-${details}
-${interests}
+From this short conversation, ${observations[0].notice}
+${observations[1].notice}
+${observations[2].notice}
 
-How your companion should talk with you
+How your companion should work with you
 
-Your companion should speak in a ${tone} way. It should leave room for your own words and should not rush to explain, fix, or turn your answers into a category.
-
-${pace}
+${support}
 
 Things we can keep discovering together
 
-We can keep noticing what brings you ease, what helps you feel understood, and what kinds of conversation feel comfortable over time.
+${discovery}
 
 This is only a first sketch from a few answers. You can change it, ignore parts of it, or let it grow slowly.`;
 }
 
-function noticeDetails(responses) {
-  const averageLength = responses.join(" ").split(/\s+/).filter(Boolean).length / responses.length;
-
-  if (averageLength > 24) {
-    return "When something matters to you, you may enjoy having space to tell a little of the story around it.";
-  }
-
-  if (averageLength < 10) {
-    return "You may like to begin simply, with the option to say more only when it feels right.";
-  }
-
-  return "You shared in a steady, natural way, with enough detail for someone to follow without pushing for more.";
-}
-
-function noticeTone(text) {
-  const reflectiveWords = ["quiet", "remember", "thought", "felt", "feel", "peace", "calm"];
-  const activeWords = ["walk", "made", "built", "played", "went", "garden", "work", "music"];
-  const hasReflectiveWords = reflectiveWords.some((word) => text.includes(word));
-  const hasActiveWords = activeWords.some((word) => text.includes(word));
-
-  if (hasReflectiveWords && !hasActiveWords) {
-    return "calm, unhurried, and thoughtful";
-  }
-
-  if (hasActiveWords) {
-    return "warm, present, and interested";
-  }
-
-  return "gentle, clear, and curious";
-}
-
-function noticePace(responses) {
-  const questionCount = responses.filter((response) => response.includes("?")).length;
-
-  if (questionCount > 0) {
-    return "When you ask or wonder about something, your companion should welcome that and stay with the question beside you.";
-  }
-
-  return "Your companion should ask small follow-up questions that grow naturally from what you already shared.";
-}
-
-function noticeInterests(text) {
-  const possibleInterests = [
-    ["family", "Time with people close to you may be a meaningful place for conversation."],
-    ["friend", "Shared moments with other people may be worth returning to gently."],
-    ["music", "Music may be one comfortable doorway into memory, mood, or joy."],
-    ["book", "Stories and ideas may give your companion good places to begin."],
-    ["garden", "Patient, living things may be part of what gives a day texture for you."],
-    ["cook", "Everyday making and familiar comforts may be meaningful to include."]
+function noticePatterns(responses) {
+  const patterns = [
+    {
+      id: "serving",
+      words: ["help", "helped", "support", "serve", "service", "volunteer", "care", "cared", "neighbor", "church", "community"],
+      notice: (matches) => `when you mentioned ${formatMatches(matches)}, one early pattern is that meaning may show up when your time or attention helps someone else.`,
+      support: "When we explore ideas together, it may help to connect them back to the people they could serve.",
+      discovery: "We can keep noticing which kinds of care, service, or encouragement feel most worth your energy."
+    },
+    {
+      id: "making",
+      words: ["build", "built", "make", "made", "fix", "fixed", "repair", "create", "created", "cook", "cooked", "garden", "sew", "wood", "project"],
+      notice: (matches) => `when you talked about ${formatMatches(matches)}, you seemed to connect meaning with making something real, useful, or cared for.`,
+      support: "I should keep our conversations practical, with room to turn thoughts into next steps when that feels helpful.",
+      discovery: "We can keep discovering what kinds of making, fixing, or shaping give you a sense of satisfaction."
+    },
+    {
+      id: "relationships",
+      words: ["family", "daughter", "son", "grand", "grandchild", "grandkids", "wife", "husband", "friend", "friends", "mother", "father", "sister", "brother"],
+      notice: (matches) => `when you mentioned ${formatMatches(matches)}, you seemed to place real meaning in relationships and shared moments.`,
+      support: "I should make space for the people in your stories and remember that everyday moments with them may carry real weight.",
+      discovery: "We can keep noticing which relationships, memories, and shared routines you want your companion to understand."
+    },
+    {
+      id: "curiosity",
+      words: ["wonder", "curious", "learn", "learned", "read", "book", "idea", "ideas", "why", "how", "question", "thinking", "understand"],
+      notice: (matches) => `when you brought up ${formatMatches(matches)}, you seemed to enjoy thinking things through rather than rushing past the idea.`,
+      support: "When we talk through ideas, I should move at a steady pace and help connect the thought to what matters in daily life.",
+      discovery: "We can keep discovering which questions are interesting enough to sit with for a while."
+    },
+    {
+      id: "humor",
+      words: ["laugh", "laughed", "funny", "joke", "joked", "humor", "silly", "smile", "smiled"],
+      notice: (matches) => `when you mentioned ${formatMatches(matches)}, humor seemed like one way moments become lighter, warmer, or easier to share.`,
+      support: "I should leave room for a little lightness when it fits, without forcing cheerfulness.",
+      discovery: "We can keep noticing what kinds of humor feel natural and welcome."
+    },
+    {
+      id: "ease",
+      words: ["easy", "easier", "simple", "simpler", "organize", "organized", "plan", "planned", "problem", "solve", "solved", "useful", "practical"],
+      notice: (matches) => `when you mentioned ${formatMatches(matches)}, you seemed to value practical ways to make life a little easier or more workable.`,
+      support: "I should help sort ideas into plain next steps while still leaving room for the bigger reason behind them.",
+      discovery: "We can keep discovering what kinds of support would make ordinary tasks feel lighter."
+    },
+    {
+      id: "story",
+      words: ["story", "remember", "remembered", "memory", "years", "used to", "when i", "told", "shared"],
+      notice: (matches) => `when you shared ${formatMatches(matches)}, you seemed to understand moments through story, memory, or the details around what happened.`,
+      support: "I should listen for the story around an answer instead of trying to rush to the point.",
+      discovery: "We can keep noticing which memories feel important to return to gently."
+    },
+    {
+      id: "ordinary",
+      words: ["coffee", "morning", "walk", "outside", "porch", "music", "meal", "dinner", "breakfast", "tea", "sun", "quiet", "home"],
+      notice: (matches) => `when you mentioned ${formatMatches(matches)}, ordinary moments seemed to carry more meaning than they first appear to.`,
+      support: "I should treat small daily details as worth noticing, not as filler before the important part.",
+      discovery: "We can keep discovering which small routines, places, and sounds help a day feel good."
+    },
+    {
+      id: "calm",
+      words: ["calm", "peace", "peaceful", "quiet", "slow", "gentle", "rest", "rested", "still"],
+      notice: (matches) => `when you used words like ${formatMatches(matches)}, you may prefer conversation that has room to breathe and does not push too quickly.`,
+      support: "I should keep a calm pace, ask one thing at a time, and give you space to answer in your own words.",
+      discovery: "We can keep noticing what pace and tone help conversation feel comfortable."
+    }
   ];
 
-  const found = possibleInterests.find(([word]) => text.includes(word));
+  const scored = patterns
+    .map((pattern) => ({
+      ...pattern,
+      matches: matchedWords(pattern.words, responses),
+      score: matchedWords(pattern.words, responses).length
+    }))
+    .filter((pattern) => pattern.score > 0)
+    .sort((first, second) => second.score - first.score)
+    .map((pattern) => ({
+      ...pattern,
+      notice: pattern.notice(pattern.matches)
+    }));
 
-  if (found) {
-    return found[1];
+  const fallback = [
+    {
+      id: "ordinary",
+      notice: "you seem to give ordinary moments enough attention for them to become meaningful.",
+      support: "I should begin with everyday language and let larger ideas appear naturally from what you share.",
+      discovery: "We can keep noticing which parts of daily life feel worth remembering."
+    },
+    {
+      id: "story",
+      notice: "you may appreciate being heard through the shape of what happened, not just the short answer.",
+      support: "I should listen for details and connections instead of rushing to summarize you.",
+      discovery: "We can keep discovering which stories feel important to hold onto."
+    },
+    {
+      id: "calm",
+      notice: "you may prefer a companion that stays calm, plainspoken, and patient.",
+      support: "I should ask gentle follow-up questions and give you space to decide what matters.",
+      discovery: "We can keep learning what makes the conversation feel comfortable and useful."
+    }
+  ];
+
+  return fillObservations(scored, fallback);
+}
+
+function matchedWords(words, responses) {
+  const matches = responses.reduce((found, response) => {
+    const text = response.toLowerCase();
+    return [...found, ...words.filter((word) => text.includes(word))];
+  }, []);
+
+  return [...new Set(matches)];
+}
+
+function formatMatches(matches) {
+  const readable = matches.slice(0, 2);
+
+  if (readable.length === 1) {
+    return readable[0];
   }
 
-  return "The things you enjoy may come through best when the conversation begins with ordinary moments, not big questions.";
+  return `${readable[0]} and ${readable[1]}`;
+}
+
+function fillObservations(scored, fallback) {
+  const observations = [...scored];
+
+  fallback.forEach((item) => {
+    if (observations.length < 3 && !observations.some((pattern) => pattern.id === item.id)) {
+      observations.push(item);
+    }
+  });
+
+  return observations.slice(0, 3);
+}
+
+function buildSupportGuidance(observations) {
+  return observations
+    .slice(0, 2)
+    .map((observation) => observation.support)
+    .join("\n");
+}
+
+function buildDiscoveryGuidance(observations) {
+  return observations
+    .map((observation) => observation.discovery)
+    .join("\n");
 }
