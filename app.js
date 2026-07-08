@@ -4,6 +4,7 @@ const beginButton = document.querySelector("#begin-button");
 const messages = document.querySelector("#messages");
 const replyForm = document.querySelector("#reply-form");
 const replyInput = document.querySelector("#reply-input");
+const replyButton = replyForm.querySelector("button");
 const profileCard = document.querySelector("#profile-card");
 const profileText = document.querySelector("#profile-text");
 const downloadButton = document.querySelector("#download-button");
@@ -109,7 +110,8 @@ function handleReply(text) {
   if (state.step === "companionName") {
     state.companionName = cleanName(text) || "my companion";
     state.step = "companionAppearance";
-    addMessage("Would you like your companion to have a particular form or appearance? It could be a dinosaur, a bee, an owl, a car, a lighthouse, or nothing at all.", "companion");
+    replyButton.textContent = "Let's continue";
+    addMessage("There's no right answer to this question.\n\nWhen you picture your companion, what do you picture?", "companion");
     return;
   }
 
@@ -141,7 +143,7 @@ function showCompanionPackage() {
   handoffCard.classList.remove("hidden");
   replyInput.disabled = true;
   replyInput.placeholder = "Your Companion Package is ready.";
-  replyForm.querySelector("button").disabled = true;
+  replyButton.disabled = true;
   profileCard.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
