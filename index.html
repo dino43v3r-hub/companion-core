@@ -9,10 +9,19 @@
   <body>
     <main class="app-shell">
       <section id="welcome-screen" class="welcome-screen" aria-labelledby="welcome-title">
-        <p class="eyebrow">Companion Core</p>
-        <h1 id="welcome-title">Let your companion begin by getting to know you.</h1>
+        <div class="conversation-hint" aria-hidden="true">
+          <span class="chair chair-left"></span>
+          <span class="table">
+            <span class="mug"></span>
+          </span>
+          <span class="chair chair-right"></span>
+        </div>
+        <h1 id="welcome-title">Before we build your companion…</h1>
+        <p class="welcome-subheadline">Let’s spend a few minutes talking.</p>
         <p class="welcome-copy">
-          Take a few quiet minutes with a warm guide. There are no right answers here.
+          There are no right answers.<br>
+          Just a conversation.<br>
+          By the end, you’ll have the first version of your Companion Profile.
         </p>
         <button id="begin-button" class="primary-button" type="button">Begin gently</button>
       </section>
@@ -20,7 +29,7 @@
       <section id="conversation-screen" class="conversation-screen hidden" aria-labelledby="conversation-title">
         <div class="conversation-header">
           <p class="eyebrow">Companion Builder</p>
-          <h1 id="conversation-title">A gentle first conversation</h1>
+          <h1 id="conversation-title">I'm glad you're here</h1>
         </div>
 
         <div id="messages" class="messages" aria-live="polite"></div>
