@@ -14,11 +14,24 @@ const copyStatus = document.querySelector("#copy-status");
 const handoffInstructions = document.querySelector("#handoff-instructions");
 const handoffTitle = document.querySelector("#handoff-title");
 const handoffNote = handoffScreen.querySelector(".package-note");
+const revealSequence = document.querySelector("#reveal-sequence");
+const revealSequenceText = document.querySelector("#reveal-sequence-text");
+const companionReveal = document.querySelector("#companion-reveal");
+const companionRevealTitle = document.querySelector("#companion-reveal-title");
+const companionAvatar = document.querySelector("#companion-avatar");
+const finalClosingLine = document.querySelector("#final-closing-line");
 const platformButtons = document.querySelectorAll(".platform-button");
 const flowError = document.querySelector("#flow-error");
 const toastRegion = document.querySelector("#toast-region");
+const journeySteps = document.querySelectorAll(".journey-step");
 
 const flowErrorMessage = "Something didn't open correctly. Please refresh and try again.";
+const revealMessages = [
+  "Building your companion...",
+  "Reflecting on what you shared...",
+  "Looking for the patterns that make this companion unique...",
+  "Every companion begins with understanding."
+];
 const noticeItems = [
   "No account required.",
   "No database is used in this MVP.",
@@ -81,15 +94,15 @@ downloadButton.addEventListener("click", () => {
   link.click();
   link.remove();
   URL.revokeObjectURL(url);
-  showToast("Exported. Your companion is ready to take with you.");
+  showToast("The journey begins here.");
 });
 
 copyPackageButton.addEventListener("click", () => {
-  copyText(state.companionPackage, "Copied. Your companion is ready to take with you.");
+  copyText(state.companionPackage, "Your companion is ready to travel with you.");
 });
 
 copyMessageButton.addEventListener("click", () => {
-  copyText(state.firstMessage, "Copied. Your companion is ready to take with you.");
+  copyText(state.firstMessage, "Your companion is ready to travel with you.");
 });
 
 platformButtons.forEach((button) => {
@@ -204,9 +217,11 @@ function showStep(step) {
 
   builderIntro.classList.add("hidden");
   handoffScreen.classList.add("hidden");
+  setJourneyStep("builder");
 }
 
 function showHomeSelection() {
+  setJourneyStep("home");
   builderIntro.classList.add("hidden");
   builderCards.forEach((card) => {
     card.classList.add("hidden");
@@ -214,6 +229,9 @@ function showHomeSelection() {
   packagePanel.classList.add("hidden");
   handoffInstructions.classList.add("hidden");
   handoffInstructions.replaceChildren();
+  revealSequence.classList.add("hidden");
+  companionReveal.classList.add("hidden");
+  finalClosingLine.classList.add("hidden");
   handoffTitle.textContent = "Choose your companion's home.";
   handoffNote.textContent = "Before we build, choose where your companion will live. Companion Core will prepare a package you can take there.";
   handoffScreen.classList.remove("hidden");
@@ -233,6 +251,7 @@ function selectPlatform(platform) {
 
   handoffScreen.classList.add("hidden");
   builderIntro.classList.remove("hidden");
+  setJourneyStep("builder");
   builderIntro.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -242,10 +261,32 @@ function updatePlatformSelection() {
   });
 }
 
+function setJourneyStep(currentStep) {
+  const order = ["welcome", "home", "builder", "meet"];
+  const currentIndex = order.indexOf(currentStep);
+
+  journeySteps.forEach((step) => {
+    const stepIndex = order.indexOf(step.dataset.journeyStep);
+    const isCurrent = step.dataset.journeyStep === currentStep;
+
+    step.classList.toggle("is-current", isCurrent);
+    step.classList.toggle("is-complete", stepIndex >= 0 && stepIndex < currentIndex);
+
+    if (isCurrent) {
+      step.setAttribute("aria-current", "step");
+      return;
+    }
+
+    step.removeAttribute("aria-current");
+  });
+}
+
 function showFinalPackage() {
+  setJourneyStep("meet");
   state.firstMessage = buildFirstMessage();
   state.companionPackage = buildCompanionPackage();
   profileText.textContent = state.companionPackage;
+  prepareCompanionReveal();
 
   builderCards.forEach((card) => {
     card.classList.add("hidden");
@@ -254,15 +295,57 @@ function showFinalPackage() {
   packagePanel.classList.add("hidden");
   handoffInstructions.classList.add("hidden");
   handoffInstructions.replaceChildren();
+  companionReveal.classList.add("hidden");
+  finalClosingLine.classList.add("hidden");
+  revealSequence.classList.remove("hidden");
+  revealSequenceText.textContent = revealMessages[0];
 
-  handoffTitle.textContent = "Your companion is ready for its first home.";
-  handoffNote.textContent = "Here is the package you can carry into the AI platform you chose.";
+  handoffTitle.textContent = "Creating your companion.";
+  handoffNote.textContent = "A quiet moment helps turn your answers into a first sketch.";
   updatePlatformSelection();
   handoffScreen.classList.add("package-screen-final");
   handoffScreen.classList.remove("hidden");
-  revealPackage();
-  showPlatformGuide(state.selectedPlatform);
-  showToast("Your companion package is ready.");
+  handoffScreen.scrollIntoView({ behavior: "smooth", block: "start" });
+  startRevealSequence();
+}
+
+function prepareCompanionReveal() {
+  const companionName = state.companionName || "your companion";
+
+  companionRevealTitle.textContent = `Meet ${companionName}.`;
+  companionAvatar.textContent = getInitial(companionName);
+}
+
+function startRevealSequence() {
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const stepDelay = reduceMotion ? 450 : 950;
+  const revealDelay = reduceMotion ? 500 : 900;
+  let index = 0;
+
+  const showNextMessage = () => {
+    index += 1;
+
+    if (index < revealMessages.length) {
+      revealSequenceText.textContent = revealMessages[index];
+      window.setTimeout(showNextMessage, stepDelay);
+      return;
+    }
+
+    window.setTimeout(showReveal, revealDelay);
+  };
+
+  window.setTimeout(showNextMessage, stepDelay);
+}
+
+function showReveal() {
+  handoffTitle.textContent = `Meet ${state.companionName}.`;
+  handoffNote.textContent = "Your companion is ready to begin learning with you.";
+  revealSequence.classList.add("hidden");
+  companionReveal.classList.remove("hidden");
+  revealPackage(false);
+  showPlatformGuide(state.selectedPlatform, false);
+  finalClosingLine.classList.remove("hidden");
+  showToast(`Meet ${state.companionName}. Your companion profile is ready.`);
 }
 
 function buildCompanionPackage() {
@@ -273,8 +356,6 @@ function buildCompanionPackage() {
   return `Companion Package v0.1
 
 This is only the beginning.
-
-Oh... we're going to keep learning together.
 
 This package belongs to ${state.personName}.
 Companion Core does not keep this companion here. ${state.personName} chooses where this companion will live.
@@ -331,11 +412,11 @@ function buildFirstMessage() {
   return `Hello. My name is ${state.personName}. I would like you to become my AI companion named ${state.companionName}. Companion Core helped me create the Companion Package below. Please use it as a starting point, not a final description. Treat every observation as tentative. Continue learning naturally through our conversations, respect my corrections, and help me think rather than think for me.`;
 }
 
-async function showPlatformGuide(platform) {
+async function showPlatformGuide(platform, scrollToPackage = true) {
   updatePlatformSelection();
 
   try {
-    revealPackage();
+    revealPackage(scrollToPackage);
   } catch (error) {
     showFlowError(error);
     return;
@@ -381,9 +462,12 @@ function showFlowError(error) {
   showToast("Something didn't work right. Let's try that again.");
 }
 
-function revealPackage() {
+function revealPackage(scrollToPackage = true) {
   packagePanel.classList.remove("hidden");
-  packagePanel.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  if (scrollToPackage) {
+    packagePanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 }
 
 async function loadPlatformGuide(platform) {
@@ -479,14 +563,14 @@ function createGuideActions() {
   packageButton.type = "button";
   packageButton.textContent = "Copy my Companion Package";
   packageButton.addEventListener("click", () => {
-    copyText(state.companionPackage, "Your Companion Package is copied.");
+    copyText(state.companionPackage, "Your companion is ready to travel with you.");
   });
 
   messageButton.className = "secondary-button";
   messageButton.type = "button";
   messageButton.textContent = "Copy the first message";
   messageButton.addEventListener("click", () => {
-    copyText(state.firstMessage, "The first message is copied.");
+    copyText(state.firstMessage, "Your companion is ready to travel with you.");
   });
 
   actions.append(packageButton, messageButton);
@@ -632,6 +716,11 @@ function buildUnknowns() {
 function shorten(text) {
   const cleaned = cleanText(text);
   return cleaned.length > 90 ? `${cleaned.slice(0, 87)}...` : cleaned;
+}
+
+function getInitial(text) {
+  const cleaned = cleanText(text);
+  return cleaned ? cleaned[0].toUpperCase() : "C";
 }
 
 function formatProfileList(items) {
