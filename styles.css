@@ -22,8 +22,6 @@
 body {
   margin: 0;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
   background:
     linear-gradient(135deg, rgba(47, 111, 103, 0.1), transparent 34%),
     linear-gradient(180deg, rgba(255, 250, 242, 0.86), rgba(247, 243, 236, 0.96)),
@@ -47,12 +45,10 @@ button {
 
 .app-shell {
   width: min(1040px, 100%);
-  min-height: calc(100vh - 78px);
-  flex: 1;
   margin: 0 auto;
-  padding: 34px;
+  padding: clamp(26px, 6vh, 58px) 34px 0;
   display: grid;
-  align-items: center;
+  align-items: start;
 }
 
 .welcome-screen,
@@ -774,10 +770,10 @@ pre {
 
 .site-footer {
   width: min(1040px, 100%);
-  margin: 0 auto;
-  padding: 42px 34px 26px;
+  margin: 38px auto 0;
+  padding: 0 34px 30px;
   color: rgba(95, 106, 99, 0.82);
-  font-size: 0.82rem;
+  font-size: 0.92rem;
   line-height: 1.35;
 }
 
@@ -801,8 +797,7 @@ pre {
   }
 
   .app-shell {
-    min-height: calc(100vh - 74px);
-    padding: 12px;
+    padding: 14px 12px 0;
     align-items: start;
   }
 
@@ -1049,8 +1044,9 @@ pre {
   }
 
   .site-footer {
-    padding: 32px 12px 18px;
-    font-size: 0.76rem;
+    margin-top: 32px;
+    padding: 0 12px 20px;
+    font-size: 0.86rem;
   }
 }
 
@@ -1070,7 +1066,7 @@ pre {
   }
 
   .app-shell {
-    padding: 24px;
+    padding: 28px 24px 0;
   }
 
   .welcome-screen,
