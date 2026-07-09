@@ -20,7 +20,7 @@ const companionReveal = document.querySelector("#companion-reveal");
 const companionRevealTitle = document.querySelector("#companion-reveal-title");
 const companionAvatar = document.querySelector("#companion-avatar");
 const finalClosingLine = document.querySelector("#final-closing-line");
-const companionNotice = document.querySelector("#companion-notice");
+const siteFooter = document.querySelector("#site-footer");
 const platformButtons = document.querySelectorAll(".platform-button");
 const flowError = document.querySelector("#flow-error");
 const toastRegion = document.querySelector("#toast-region");
@@ -32,6 +32,14 @@ const revealMessages = [
   "Reflecting on what you shared...",
   "Looking for the patterns that make this companion unique...",
   "Every companion begins with understanding."
+];
+const noticeItems = [
+  "No account required.",
+  "No database is used in this MVP.",
+  "Your information is only used while you're using this page.",
+  "Companion Core does not permanently store your Companion Package.",
+  "Once you copy your package into another AI platform, that platform's privacy and memory settings apply.",
+  "Companion Core is not medical, legal, financial, or emergency advice."
 ];
 const stepOrder = [
   "personName",
@@ -425,15 +433,37 @@ function revealPackage(scrollToPackage = true) {
 }
 
 function showCompanionNotice() {
-  if (companionNotice) {
-    companionNotice.classList.remove("hidden");
+  if (!siteFooter || document.querySelector("#companion-notice")) {
+    return;
   }
+
+  const signature = siteFooter.querySelector(".site-signature");
+  const notice = createCompanionNotice();
+  siteFooter.insertBefore(notice, signature);
 }
 
 function hideCompanionNotice() {
-  if (companionNotice) {
-    companionNotice.classList.add("hidden");
-  }
+  document.querySelector("#companion-notice")?.remove();
+}
+
+function createCompanionNotice() {
+  const notice = document.createElement("section");
+  const title = document.createElement("h2");
+  const list = document.createElement("ul");
+
+  notice.id = "companion-notice";
+  notice.className = "companion-notice";
+  notice.setAttribute("aria-label", "Companion Core Notice");
+  title.textContent = "Companion Core Notice";
+
+  noticeItems.forEach((item) => {
+    const listItem = document.createElement("li");
+    listItem.textContent = item;
+    list.appendChild(listItem);
+  });
+
+  notice.append(title, list);
+  return notice;
 }
 
 async function loadPlatformGuide(platform) {
