@@ -48,3 +48,11 @@ docs/
 ## MVP Goal
 
 A person visits the site, starts a gentle conversation, receives Companion Package v0.1, and knows how to introduce that package into the AI platform they already use.
+
+## License
+
+This repository is currently released under **All Rights Reserved**.
+
+The source code is publicly visible for transparency and collaboration discussions only.
+
+No permission is granted to copy, modify, redistribute, or use this software without written permission from the copyright holder.
