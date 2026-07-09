@@ -490,30 +490,11 @@ input[type="text"]:focus-visible {
   margin: 0;
 }
 
-.companion-reveal {
-  max-width: 780px;
-  margin: 28px 0 34px;
-  padding: 28px 0 6px;
-  animation: softReveal 780ms ease both;
-}
-
-.reveal-label,
 .package-version {
   margin: 0 0 10px;
   color: var(--accent-dark);
   font-size: 0.96rem;
   font-weight: 700;
-}
-
-.reveal-copy {
-  max-width: 720px;
-  color: var(--muted);
-  font-size: clamp(1.15rem, 2.4vw, 1.42rem);
-  line-height: 1.48;
-}
-
-.reveal-copy p {
-  margin: 0 0 12px;
 }
 
 .final-closing-line {
@@ -933,15 +914,6 @@ pre {
   .reveal-sequence {
     margin-top: 20px;
     font-size: 1.18rem;
-  }
-
-  .companion-reveal {
-    margin: 20px 0 24px;
-    padding-top: 18px;
-  }
-
-  .reveal-copy {
-    font-size: 1.05rem;
   }
 
   .final-closing-line {

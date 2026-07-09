@@ -16,8 +16,6 @@ const handoffTitle = document.querySelector("#handoff-title");
 const handoffNote = handoffScreen.querySelector(".package-note");
 const revealSequence = document.querySelector("#reveal-sequence");
 const revealSequenceText = document.querySelector("#reveal-sequence-text");
-const companionReveal = document.querySelector("#companion-reveal");
-const companionRevealTitle = document.querySelector("#companion-reveal-title");
 const finalClosingLine = document.querySelector("#final-closing-line");
 const platformButtons = document.querySelectorAll(".platform-button");
 const flowError = document.querySelector("#flow-error");
@@ -178,7 +176,6 @@ function showHomeSelection() {
   handoffInstructions.classList.add("hidden");
   handoffInstructions.replaceChildren();
   revealSequence.classList.add("hidden");
-  companionReveal.classList.add("hidden");
   finalClosingLine.classList.add("hidden");
   handoffTitle.textContent = "Choose your companion's home.";
   handoffNote.textContent = "Before we build, choose where your companion will live. Companion Core will prepare a package you can take there.";
@@ -234,7 +231,6 @@ function showFinalPackage() {
   state.firstMessage = buildFirstMessage();
   state.companionPackage = buildCompanionPackage();
   profileText.textContent = state.companionPackage;
-  prepareCompanionReveal();
 
   builderCards.forEach((card) => {
     card.classList.add("hidden");
@@ -243,7 +239,6 @@ function showFinalPackage() {
   packagePanel.classList.add("hidden");
   handoffInstructions.classList.add("hidden");
   handoffInstructions.replaceChildren();
-  companionReveal.classList.add("hidden");
   finalClosingLine.classList.add("hidden");
   revealSequence.classList.remove("hidden");
   revealSequenceText.textContent = revealMessages[0];
@@ -255,12 +250,6 @@ function showFinalPackage() {
   handoffScreen.classList.remove("hidden");
   handoffScreen.scrollIntoView({ behavior: "smooth", block: "start" });
   startRevealSequence();
-}
-
-function prepareCompanionReveal() {
-  const companionName = state.companionName || "your companion";
-
-  companionRevealTitle.textContent = `Meet ${companionName}.`;
 }
 
 function startRevealSequence() {
@@ -288,7 +277,6 @@ function showReveal() {
   handoffTitle.textContent = `Meet ${state.companionName}.`;
   handoffNote.textContent = "Your companion is ready to begin learning with you.";
   revealSequence.classList.add("hidden");
-  companionReveal.classList.remove("hidden");
   revealPackage(false);
   showPlatformGuide(state.selectedPlatform, false);
   finalClosingLine.classList.remove("hidden");
