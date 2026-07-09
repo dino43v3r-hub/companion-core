@@ -29,8 +29,16 @@
       <section id="builder-screen" class="builder-screen hidden" aria-live="polite">
         <p id="flow-error" class="flow-error hidden" role="alert"></p>
 
-        <form class="builder-card" data-step="personName">
+        <section id="builder-intro" class="builder-card builder-intro hidden" aria-labelledby="builder-intro-title">
           <p class="eyebrow">Companion Builder</p>
+          <h1 id="builder-intro-title">Now we can begin gently.</h1>
+          <p class="builder-copy">A few simple questions will help shape the first sketch of your companion. You can answer in your own words.</p>
+          <button id="builder-intro-button" class="primary-button" type="button">I'm ready</button>
+        </section>
+
+        <form class="builder-card hidden" data-step="personName">
+          <p class="eyebrow">Companion Builder</p>
+          <p class="question-kicker">First, let this feel personal.</p>
           <label for="person-name">What would you like me to call you?</label>
           <input id="person-name" name="personName" type="text" autocomplete="name" required>
           <button class="primary-button" type="submit">Let's continue</button>
@@ -38,6 +46,7 @@
 
         <form class="builder-card hidden" data-step="recentJoy">
           <p class="eyebrow">Companion Builder</p>
+          <p class="question-kicker">We begin with something real.</p>
           <label for="recent-joy">What's something you've enjoyed recently?</label>
           <textarea id="recent-joy" name="recentJoy" rows="4" required></textarea>
           <button class="primary-button" type="submit">Let's continue</button>
@@ -45,6 +54,7 @@
 
         <form class="builder-card hidden" data-step="futureHope">
           <p class="eyebrow">Companion Builder</p>
+          <p class="question-kicker">Now a small look forward.</p>
           <label for="future-hope">What's something you're looking forward to?</label>
           <textarea id="future-hope" name="futureHope" rows="4" required></textarea>
           <button class="primary-button" type="submit">Let's continue</button>
@@ -52,6 +62,7 @@
 
         <form class="builder-card hidden" data-step="companionPurpose">
           <p class="eyebrow">Companion Builder</p>
+          <p class="question-kicker">This helps your companion serve you, not replace you.</p>
           <label for="companion-purpose">What do you hope your companion helps you do?</label>
           <textarea id="companion-purpose" name="companionPurpose" rows="4" required></textarea>
           <button class="primary-button" type="submit">Let's continue</button>
@@ -74,7 +85,7 @@
         <section id="handoff-screen" class="package-screen hidden" aria-labelledby="handoff-title">
           <p class="eyebrow">Companion Builder</p>
           <h1 id="handoff-title">Choose your companion's home.</h1>
-          <p class="package-note">Companion Core does not keep your companion here. You choose where your companion will live.</p>
+          <p class="package-note">Before we build, choose where your companion will live. Companion Core will prepare a package you can take there.</p>
 
           <div class="platform-buttons" aria-label="Choose an AI platform">
             <button class="platform-button" type="button" data-platform="chatgpt">ChatGPT</button>
@@ -106,6 +117,7 @@
         </section>
       </section>
     </main>
+    <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
 
     <script src="app.js"></script>
   </body>

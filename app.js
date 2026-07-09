@@ -1,7 +1,9 @@
 const welcomeScreen = document.querySelector("#welcome-screen");
 const builderScreen = document.querySelector("#builder-screen");
 const beginButton = document.querySelector("#begin-button");
-const builderCards = document.querySelectorAll(".builder-card");
+const builderIntro = document.querySelector("#builder-intro");
+const builderIntroButton = document.querySelector("#builder-intro-button");
+const builderCards = document.querySelectorAll("form.builder-card");
 const handoffScreen = document.querySelector("#handoff-screen");
 const packagePanel = document.querySelector("#package-panel");
 const profileText = document.querySelector("#profile-text");
@@ -10,8 +12,11 @@ const copyPackageButton = document.querySelector("#copy-package-button");
 const copyMessageButton = document.querySelector("#copy-message-button");
 const copyStatus = document.querySelector("#copy-status");
 const handoffInstructions = document.querySelector("#handoff-instructions");
+const handoffTitle = document.querySelector("#handoff-title");
+const handoffNote = handoffScreen.querySelector(".package-note");
 const platformButtons = document.querySelectorAll(".platform-button");
 const flowError = document.querySelector("#flow-error");
+const toastRegion = document.querySelector("#toast-region");
 
 const flowErrorMessage = "Something didn't open correctly. Please refresh and try again.";
 const noticeItems = [
@@ -38,6 +43,7 @@ const state = {
   companionPurpose: "",
   companionName: "",
   companionAppearance: "",
+  selectedPlatform: "",
   companionPackage: "",
   firstMessage: ""
 };
@@ -47,10 +53,17 @@ installCompanionNotices();
 beginButton.addEventListener("click", () => runFlowStep(() => {
   welcomeScreen.classList.add("hidden");
   builderScreen.classList.remove("hidden");
+  showHomeSelection();
+}));
+
+builderIntroButton.addEventListener("click", () => runFlowStep(() => {
+  builderIntro.classList.add("hidden");
   showStep("personName");
 }));
 
 builderCards.forEach((card) => {
+  card.setAttribute("novalidate", "");
+
   card.addEventListener("submit", (event) => {
     event.preventDefault();
     runFlowStep(() => handleStep(card));
@@ -68,19 +81,20 @@ downloadButton.addEventListener("click", () => {
   link.click();
   link.remove();
   URL.revokeObjectURL(url);
+  showToast("Exported. Your companion is ready to take with you.");
 });
 
 copyPackageButton.addEventListener("click", () => {
-  copyText(state.companionPackage, "Your Companion Package is copied.");
+  copyText(state.companionPackage, "Copied. Your companion is ready to take with you.");
 });
 
 copyMessageButton.addEventListener("click", () => {
-  copyText(state.firstMessage, "The first message is copied.");
+  copyText(state.firstMessage, "Copied. Your companion is ready to take with you.");
 });
 
 platformButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    runFlowStep(() => showPlatformGuide(button.dataset.platform));
+    runFlowStep(() => selectPlatform(button.dataset.platform));
   });
 });
 
@@ -99,9 +113,10 @@ function runFlowStep(action) {
 
 function installCompanionNotices() {
   insertNoticeAfter(welcomeScreen.querySelector(".welcome-copy"));
+  insertNoticeAfter(builderIntro.querySelector(".builder-copy"));
 
   builderCards.forEach((card) => {
-    const intro = card.querySelector(".builder-copy") || card.querySelector(".eyebrow");
+    const intro = card.querySelector(".builder-copy") || card.querySelector(".question-kicker") || card.querySelector(".eyebrow");
     insertNoticeAfter(intro);
   });
 
@@ -137,13 +152,21 @@ function createCompanionNotice() {
 }
 
 function handleStep(card) {
+  const missingField = card.querySelector("input:invalid, textarea:invalid");
+
+  if (missingField) {
+    showToast("Let's finish this part before moving on.");
+    missingField.focus();
+    return;
+  }
+
   const step = card.dataset.step;
   const data = new FormData(card);
 
   if (step === "companionCreation") {
     state.companionName = cleanText(data.get("companionName")) || "my companion";
     state.companionAppearance = cleanText(data.get("companionAppearance")) || "something still taking shape";
-    showHandoff();
+    showFinalPackage();
     return;
   }
 
@@ -179,10 +202,47 @@ function showStep(step) {
     }
   });
 
+  builderIntro.classList.add("hidden");
   handoffScreen.classList.add("hidden");
 }
 
-function showHandoff() {
+function showHomeSelection() {
+  builderIntro.classList.add("hidden");
+  builderCards.forEach((card) => {
+    card.classList.add("hidden");
+  });
+  packagePanel.classList.add("hidden");
+  handoffInstructions.classList.add("hidden");
+  handoffInstructions.replaceChildren();
+  handoffTitle.textContent = "Choose your companion's home.";
+  handoffNote.textContent = "Before we build, choose where your companion will live. Companion Core will prepare a package you can take there.";
+  handoffScreen.classList.remove("hidden");
+  handoffScreen.classList.remove("package-screen-final");
+  updatePlatformSelection();
+  handoffScreen.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function selectPlatform(platform) {
+  state.selectedPlatform = platform;
+  updatePlatformSelection();
+
+  if (state.companionPackage) {
+    showPlatformGuide(platform);
+    return;
+  }
+
+  handoffScreen.classList.add("hidden");
+  builderIntro.classList.remove("hidden");
+  builderIntro.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function updatePlatformSelection() {
+  platformButtons.forEach((button) => {
+    button.classList.toggle("selected", button.dataset.platform === state.selectedPlatform);
+  });
+}
+
+function showFinalPackage() {
   state.firstMessage = buildFirstMessage();
   state.companionPackage = buildCompanionPackage();
   profileText.textContent = state.companionPackage;
@@ -194,12 +254,15 @@ function showHandoff() {
   packagePanel.classList.add("hidden");
   handoffInstructions.classList.add("hidden");
   handoffInstructions.replaceChildren();
-  platformButtons.forEach((button) => {
-    button.classList.remove("selected");
-  });
 
+  handoffTitle.textContent = "Your companion is ready for its first home.";
+  handoffNote.textContent = "Here is the package you can carry into the AI platform you chose.";
+  updatePlatformSelection();
+  handoffScreen.classList.add("package-screen-final");
   handoffScreen.classList.remove("hidden");
-  handoffScreen.scrollIntoView({ behavior: "smooth", block: "start" });
+  revealPackage();
+  showPlatformGuide(state.selectedPlatform);
+  showToast("Your companion package is ready.");
 }
 
 function buildCompanionPackage() {
@@ -269,9 +332,7 @@ function buildFirstMessage() {
 }
 
 async function showPlatformGuide(platform) {
-  platformButtons.forEach((item) => {
-    item.classList.toggle("selected", item.dataset.platform === platform);
-  });
+  updatePlatformSelection();
 
   try {
     revealPackage();
@@ -290,6 +351,7 @@ async function showPlatformGuide(platform) {
   } catch (error) {
     console.error("Could not load platform guide", { platform, error });
     handoffInstructions.textContent = "I could not open that guide just now. You can still copy your Companion Package and paste it into the AI platform you use.\n\nYour next conversation starts there.";
+    showToast("Something didn't work right. Let's try that again.");
   }
 }
 
@@ -316,6 +378,7 @@ function showFlowError(error) {
   flowError.textContent = flowErrorMessage;
   flowError.classList.remove("hidden");
   flowError.scrollIntoView({ behavior: "smooth", block: "start" });
+  showToast("Something didn't work right. Let's try that again.");
 }
 
 function revealPackage() {
@@ -458,6 +521,25 @@ function fallbackCopyText(text, successMessage) {
 
 function showCopyStatus(message) {
   copyStatus.textContent = message;
+  showToast(message);
+}
+
+function showToast(message) {
+  if (!toastRegion) {
+    return;
+  }
+
+  const toast = document.createElement("p");
+  toast.className = "toast";
+  toast.textContent = message;
+  toastRegion.appendChild(toast);
+
+  window.setTimeout(() => {
+    toast.classList.add("toast-hiding");
+    window.setTimeout(() => {
+      toast.remove();
+    }, 250);
+  }, 3600);
 }
 
 function cleanText(text) {
