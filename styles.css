@@ -215,6 +215,32 @@ h2 {
   font-weight: 700;
 }
 
+.welcome-disclaimer {
+  max-width: 720px;
+  margin: 0 0 32px;
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--soft);
+}
+
+.welcome-disclaimer h2 {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.welcome-disclaimer ul {
+  margin: 0;
+  padding-left: 1.3em;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.welcome-disclaimer li + li {
+  margin-top: 6px;
+}
+
 .primary-button,
 .secondary-button,
 .send-button,
@@ -301,11 +327,27 @@ h2 {
 }
 
 .builder-copy,
-.package-note {
+.package-note,
+.handoff-note,
+.package-reminder {
   max-width: 760px;
   margin: 18px 0 28px;
   color: var(--muted);
   font-size: clamp(1.2rem, 3vw, 1.55rem);
+}
+
+.handoff-note,
+.package-reminder {
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--soft);
+  font-size: clamp(1.05rem, 2.3vw, 1.25rem);
+  line-height: 1.45;
+}
+
+.package-reminder {
+  margin-top: 0;
 }
 
 .package-callout {
@@ -489,37 +531,85 @@ pre {
 
 @media (max-width: 680px) {
   body {
-    font-size: 20px;
+    font-size: 18px;
+    line-height: 1.5;
   }
 
   .app-shell {
-    padding: 14px;
+    padding: 12px;
     align-items: start;
   }
 
   .welcome-screen {
-    margin-top: 24px;
-    padding: 30px 22px;
+    margin-top: 10px;
+    padding: 24px 18px;
   }
 
   .conversation-hint {
-    width: min(220px, 76vw);
-    height: 90px;
-    margin-bottom: 24px;
+    width: min(190px, 74vw);
+    height: 78px;
+    margin-bottom: 18px;
   }
 
   .chair {
-    width: 62px;
-    height: 50px;
+    width: 54px;
+    height: 43px;
+    border-width: 4px;
   }
 
   .chair::before {
-    top: -29px;
-    height: 31px;
+    top: -25px;
+    height: 27px;
   }
 
   .table {
-    width: 58px;
+    width: 52px;
+    height: 42px;
+    border-top-width: 5px;
+  }
+
+  .mug {
+    top: -24px;
+    width: 22px;
+    height: 19px;
+    border-width: 3px;
+  }
+
+  h1 {
+    font-size: 2rem;
+    line-height: 1.12;
+  }
+
+  h2 {
+    font-size: 1.45rem;
+  }
+
+  .eyebrow {
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+  }
+
+  .welcome-subheadline {
+    margin-top: 12px;
+    font-size: 1.35rem;
+  }
+
+  .welcome-copy {
+    margin: 16px 0 20px;
+    font-size: 1.08rem;
+  }
+
+  .welcome-disclaimer {
+    margin-bottom: 22px;
+    padding: 16px;
+  }
+
+  .welcome-disclaimer h2 {
+    font-size: 1.05rem;
+  }
+
+  .welcome-disclaimer ul {
+    font-size: 0.96rem;
   }
 
   .conversation-screen {
@@ -532,7 +622,54 @@ pre {
 
   .builder-card,
   .package-screen {
-    padding: 26px 20px;
+    padding: 22px 16px;
+  }
+
+  .package-panel {
+    margin-top: 22px;
+    padding: 20px 16px;
+  }
+
+  .builder-card label {
+    margin-bottom: 18px;
+    font-size: 1.55rem;
+    line-height: 1.18;
+  }
+
+  .builder-copy,
+  .package-note {
+    margin: 14px 0 20px;
+    font-size: 1.05rem;
+  }
+
+  .handoff-note,
+  .package-reminder {
+    margin: 14px 0 18px;
+    padding: 14px;
+    font-size: 1rem;
+  }
+
+  .package-callout {
+    margin-top: 14px;
+    font-size: 1.22rem;
+  }
+
+  textarea,
+  input[type="text"] {
+    min-height: 96px;
+    padding: 14px;
+  }
+
+  input[type="text"] {
+    min-height: 58px;
+  }
+
+  .primary-button,
+  .secondary-button,
+  .send-button,
+  .platform-button {
+    min-height: 56px;
+    padding: 13px 18px;
   }
 
   .messages {
@@ -558,5 +695,47 @@ pre {
   .platform-buttons {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  .handoff-instructions {
+    margin-top: 18px;
+    padding: 16px;
+  }
+
+  .handoff-instructions h3 {
+    font-size: 1.35rem;
+  }
+
+  pre {
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+}
+
+@media (min-width: 681px) and (max-width: 920px) {
+  body {
+    font-size: 20px;
+  }
+
+  .app-shell {
+    padding: 24px;
+  }
+
+  .welcome-screen,
+  .builder-card,
+  .package-screen {
+    padding: 34px 28px;
+  }
+
+  .builder-card label {
+    font-size: 2.15rem;
+  }
+
+  .primary-button,
+  .secondary-button,
+  .send-button,
+  .platform-button {
+    min-height: 60px;
+    padding: 15px 24px;
   }
 }
