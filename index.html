@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Companion Core</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='%236E8FAF'/%3E%3Ccircle cx='24' cy='27' r='4' fill='%23fffaf2'/%3E%3Ccircle cx='40' cy='27' r='4' fill='%23fffaf2'/%3E%3Cpath d='M22 40c5 5 15 5 20 0' fill='none' stroke='%23fffaf2' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
     <link rel="stylesheet" href="styles.css?v=20260709-hero-image-v2">
   </head>
   <body>
@@ -62,7 +63,9 @@
           <label for="person-name">What would you like me to call you?</label>
           <p id="person-name-help" class="field-helper">Use the name that feels natural for this companion to use with you.</p>
           <input id="person-name" name="personName" type="text" autocomplete="name" aria-describedby="person-name-help" required>
-          <button class="primary-button" type="submit">Let's continue</button>
+          <div class="builder-nav">
+            <button class="primary-button" type="submit">Let's continue</button>
+          </div>
         </form>
 
         <form class="builder-card hidden" data-step="recentJoy">
@@ -71,7 +74,10 @@
           <label for="recent-joy">What's something you've enjoyed recently?</label>
           <p id="recent-joy-help" class="field-helper">A small moment is enough. Ordinary things often tell the truth gently.</p>
           <textarea id="recent-joy" name="recentJoy" rows="4" aria-describedby="recent-joy-help" required></textarea>
-          <button class="primary-button" type="submit">Let's continue</button>
+          <div class="builder-nav">
+            <button class="secondary-button back-button" type="button" data-back>Back</button>
+            <button class="primary-button" type="submit">Let's continue</button>
+          </div>
         </form>
 
         <form class="builder-card hidden" data-step="futureHope">
@@ -80,7 +86,10 @@
           <label for="future-hope">What's something you're looking forward to?</label>
           <p id="future-hope-help" class="field-helper">This helps your companion notice what gives you energy, hope, or direction.</p>
           <textarea id="future-hope" name="futureHope" rows="4" aria-describedby="future-hope-help" required></textarea>
-          <button class="primary-button" type="submit">Let's continue</button>
+          <div class="builder-nav">
+            <button class="secondary-button back-button" type="button" data-back>Back</button>
+            <button class="primary-button" type="submit">Let's continue</button>
+          </div>
         </form>
 
         <form class="builder-card hidden" data-step="companionPurpose">
@@ -89,7 +98,10 @@
           <label for="companion-purpose">What do you hope your companion helps you do?</label>
           <p id="companion-purpose-help" class="field-helper">Answer in plain words. This becomes the early purpose your companion should respect.</p>
           <textarea id="companion-purpose" name="companionPurpose" rows="4" aria-describedby="companion-purpose-help" required></textarea>
-          <button class="primary-button" type="submit">Let's continue</button>
+          <div class="builder-nav">
+            <button class="secondary-button back-button" type="button" data-back>Back</button>
+            <button class="primary-button" type="submit">Let's continue</button>
+          </div>
         </form>
 
         <form class="builder-card hidden" data-step="companionCreation">
@@ -105,7 +117,10 @@
           <p id="companion-appearance-help" class="field-helper">This can be a shape, a feeling, a place, a color, or nothing specific at all.</p>
           <textarea id="companion-appearance" name="companionAppearance" rows="4" aria-describedby="companion-appearance-help" required></textarea>
 
-          <button class="primary-button" type="submit">Build my companion</button>
+          <div class="builder-nav">
+            <button class="secondary-button back-button" type="button" data-back>Back</button>
+            <button class="primary-button" type="submit">Create My Companion</button>
+          </div>
         </form>
 
         <section id="handoff-screen" class="package-screen hidden" aria-labelledby="handoff-title">
@@ -167,6 +182,6 @@
     </footer>
     <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
 
-    <script src="app.js?v=20260709-no-profile-intro"></script>
+    <script src="app.js?v=20260709-onboarding-back-nav"></script>
   </body>
 </html>

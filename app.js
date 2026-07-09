@@ -4,6 +4,7 @@ const beginButton = document.querySelector("#begin-button");
 const builderIntro = document.querySelector("#builder-intro");
 const builderIntroButton = document.querySelector("#builder-intro-button");
 const builderCards = document.querySelectorAll("form.builder-card");
+const backButtons = document.querySelectorAll("[data-back]");
 const handoffScreen = document.querySelector("#handoff-screen");
 const packagePanel = document.querySelector("#package-panel");
 const profileText = document.querySelector("#profile-text");
@@ -63,10 +64,25 @@ builderIntroButton.addEventListener("click", () => runFlowStep(() => {
 builderCards.forEach((card) => {
   card.setAttribute("novalidate", "");
 
+  card.addEventListener("input", () => {
+    saveStepDraft(card);
+  });
+
   card.addEventListener("submit", (event) => {
     event.preventDefault();
     runFlowStep(() => handleStep(card));
   });
+});
+
+backButtons.forEach((button) => {
+  button.addEventListener("click", () => runFlowStep(() => {
+    const card = button.closest("form.builder-card");
+
+    if (card) {
+      saveStepDraft(card);
+      showPreviousStep(card.dataset.step);
+    }
+  }));
 });
 
 downloadButton.addEventListener("click", () => {
@@ -111,6 +127,7 @@ function runFlowStep(action) {
 }
 
 function handleStep(card) {
+  saveStepDraft(card);
   const missingField = card.querySelector("input:invalid, textarea:invalid");
 
   if (missingField) {
@@ -120,17 +137,28 @@ function handleStep(card) {
   }
 
   const step = card.dataset.step;
-  const data = new FormData(card);
-
   if (step === "companionCreation") {
-    state.companionName = cleanText(data.get("companionName")) || "my companion";
-    state.companionAppearance = cleanText(data.get("companionAppearance")) || "something still taking shape";
+    state.companionName = state.companionName || "my companion";
+    state.companionAppearance = state.companionAppearance || "something still taking shape";
     showFinalPackage();
     return;
   }
 
-  state[step] = cleanText(data.get(step));
   showNextStep(step);
+}
+
+function saveStepDraft(card) {
+  const data = new FormData(card);
+
+  data.forEach((value, key) => {
+    if (Object.prototype.hasOwnProperty.call(state, key)) {
+      const cleaned = cleanText(value);
+
+      if (cleaned || !state[key]) {
+        state[key] = cleaned;
+      }
+    }
+  });
 }
 
 function showNextStep(currentStep) {
@@ -138,6 +166,14 @@ function showNextStep(currentStep) {
 
   if (nextStep) {
     showStep(nextStep);
+  }
+}
+
+function showPreviousStep(currentStep) {
+  const previousStep = stepOrder[stepOrder.indexOf(currentStep) - 1];
+
+  if (previousStep) {
+    showStep(previousStep);
   }
 }
 
@@ -153,6 +189,8 @@ function showStep(step) {
     card.classList.toggle("hidden", !isCurrent);
 
     if (isCurrent) {
+      hydrateStep(card);
+      updateStepNavigation(card);
       const field = card.querySelector("input, textarea");
 
       if (field) {
@@ -164,6 +202,25 @@ function showStep(step) {
   builderIntro.classList.add("hidden");
   handoffScreen.classList.add("hidden");
   setQuestionProgress(step);
+}
+
+function hydrateStep(card) {
+  const fields = card.querySelectorAll("input[name], textarea[name]");
+
+  fields.forEach((field) => {
+    if (Object.prototype.hasOwnProperty.call(state, field.name)) {
+      field.value = state[field.name];
+    }
+  });
+}
+
+function updateStepNavigation(card) {
+  const stepIndex = stepOrder.indexOf(card.dataset.step);
+  const backButton = card.querySelector("[data-back]");
+
+  if (backButton) {
+    backButton.disabled = stepIndex <= 0;
+  }
 }
 
 function showHomeSelection() {

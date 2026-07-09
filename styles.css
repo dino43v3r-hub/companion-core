@@ -391,6 +391,28 @@ input[type="text"]:focus-visible {
   margin-bottom: 26px;
 }
 
+.builder-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: stretch;
+}
+
+.builder-nav .primary-button {
+  margin-left: auto;
+}
+
+.back-button:disabled,
+.back-button:disabled:hover,
+.back-button:disabled:focus-visible {
+  cursor: not-allowed;
+  border-color: rgba(216, 207, 193, 0.9);
+  background: rgba(255, 250, 242, 0.72);
+  color: rgba(95, 106, 99, 0.54);
+  box-shadow: none;
+  transform: none;
+}
+
 .builder-copy,
 .package-note,
 .package-reminder {
@@ -910,6 +932,15 @@ pre {
   .secondary-button,
   .platform-button {
     width: 100%;
+  }
+
+  .builder-nav {
+    grid-template-columns: minmax(0, 0.72fr) minmax(0, 1fr);
+    display: grid;
+  }
+
+  .builder-nav .primary-button:only-child {
+    grid-column: 2;
   }
 
   .action-row,
