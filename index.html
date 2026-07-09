@@ -10,20 +10,58 @@
     <main class="app-shell">
       <section id="welcome-screen" class="welcome-screen" aria-labelledby="welcome-title">
         <div class="conversation-hint" aria-hidden="true">
-          <span class="chair chair-left"></span>
-          <span class="table">
-            <span class="mug"></span>
+          <span class="warm-window"></span>
+          <span class="chair chair-dino">
+            <span class="dino-character">
+              <span class="dino-head"></span>
+              <span class="dino-body"></span>
+            </span>
+            <span class="mug mug-dino"></span>
           </span>
-          <span class="chair chair-right"></span>
+          <span class="table">
+            <span class="mug mug-table-left"></span>
+            <span class="mug mug-table-right"></span>
+          </span>
+          <span class="chair chair-butterfly">
+            <span class="butterfly-character">
+              <span class="wing wing-left"></span>
+              <span class="wing wing-right"></span>
+              <span class="butterfly-body"></span>
+            </span>
+            <span class="mug mug-butterfly"></span>
+          </span>
+          <span class="chair chair-visitor"></span>
         </div>
-        <h1 id="welcome-title">Before we build your companion...</h1>
-        <p class="welcome-subheadline">Let's spend a few minutes talking.</p>
+        <h1 id="welcome-title">Welcome to Companion Core</h1>
+        <p class="welcome-subheadline">Every meaningful friendship begins with a conversation.</p>
         <p class="welcome-copy">
-          There are no right answers.<br>
-          Just a conversation.<br>
-          By the end, you'll have the first version of your Companion Package.
+          Companion Core helps you intentionally create an AI companion that reflects who you are, how you think, and how you want to be supported.
         </p>
-        <button id="begin-button" class="primary-button" type="button">Let's start the conversation</button>
+        <p class="welcome-copy">
+          An AI companion isn't here to replace people. It's here to help you think, learn, reflect, communicate, create, stay organized, and grow throughout your life.
+        </p>
+        <p class="welcome-copy welcome-reassurance">
+          There are no right answers.<br>
+          Just a conversation.
+        </p>
+        <section class="welcome-info" aria-labelledby="ai-companion-title">
+          <h2 id="ai-companion-title">What is an AI Companion?</h2>
+          <p>An AI companion is more than a chatbot.</p>
+          <p>A chatbot answers questions.</p>
+          <p>A companion learns how you communicate, understands what matters to you, and becomes a consistent thinking partner over time.</p>
+          <p>Whether you're brainstorming ideas, preparing for an important conversation, writing, learning something new, organizing your thoughts, or simply enjoying a conversation, your companion is designed to support your journey.</p>
+        </section>
+        <section class="welcome-info welcome-today" aria-labelledby="today-title">
+          <h2 id="today-title">What You'll Do Today</h2>
+          <ul>
+            <li>Answer a few simple questions.</li>
+            <li>Give your companion a name.</li>
+            <li>Describe the kind of companion you imagine.</li>
+            <li>Choose your companion's home.</li>
+            <li>Receive your first Companion Package.</li>
+          </ul>
+        </section>
+        <button id="begin-button" class="primary-button" type="button">Pull Up a Chair</button>
       </section>
 
       <section id="builder-screen" class="builder-screen hidden" aria-live="polite">
@@ -131,14 +169,14 @@
       </section>
     </main>
     <footer id="site-footer" class="site-footer" aria-label="Companion Core footer">
-      <section id="companion-notice" class="companion-notice" aria-label="Companion Core Notice">
-        <h2>Companion Core Notice</h2>
+      <section id="companion-notice" class="companion-notice" aria-label="Good to Know">
+        <h2>Good to Know</h2>
         <ul>
-          <li>No account required.</li>
-          <li>No database is used in this MVP.</li>
-          <li>Your information is only used while you're using this page.</li>
+          <li>You do not need an account to try this.</li>
+          <li>This MVP does not use a database.</li>
+          <li>Your information stays on your device during this experience.</li>
           <li>Companion Core does not permanently store your Companion Package.</li>
-          <li>Once you copy your package into another AI platform, that platform's own privacy and memory settings apply.</li>
+          <li>Companion Core is designed to support people, not replace them.</li>
           <li>Companion Core is not medical, legal, financial, or emergency advice.</li>
         </ul>
       </section>
