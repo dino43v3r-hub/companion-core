@@ -20,7 +20,6 @@ const companionReveal = document.querySelector("#companion-reveal");
 const companionRevealTitle = document.querySelector("#companion-reveal-title");
 const companionAvatar = document.querySelector("#companion-avatar");
 const finalClosingLine = document.querySelector("#final-closing-line");
-const siteFooter = document.querySelector("#site-footer");
 const platformButtons = document.querySelectorAll(".platform-button");
 const flowError = document.querySelector("#flow-error");
 const toastRegion = document.querySelector("#toast-region");
@@ -32,14 +31,6 @@ const revealMessages = [
   "Reflecting on what you shared...",
   "Looking for the patterns that make this companion unique...",
   "Every companion begins with understanding."
-];
-const noticeItems = [
-  "No account required.",
-  "No database is used in this MVP.",
-  "Your information is only used while you're using this page.",
-  "Companion Core does not permanently store your Companion Package.",
-  "Once you copy your package into another AI platform, that platform's privacy and memory settings apply.",
-  "Companion Core is not medical, legal, financial, or emergency advice."
 ];
 const stepOrder = [
   "personName",
@@ -190,7 +181,6 @@ function showHomeSelection() {
   revealSequence.classList.add("hidden");
   companionReveal.classList.add("hidden");
   finalClosingLine.classList.add("hidden");
-  hideCompanionNotice();
   handoffTitle.textContent = "Choose your companion's home.";
   handoffNote.textContent = "Before we build, choose where your companion will live. Companion Core will prepare a package you can take there.";
   handoffScreen.classList.remove("hidden");
@@ -256,7 +246,6 @@ function showFinalPackage() {
   handoffInstructions.replaceChildren();
   companionReveal.classList.add("hidden");
   finalClosingLine.classList.add("hidden");
-  hideCompanionNotice();
   revealSequence.classList.remove("hidden");
   revealSequenceText.textContent = revealMessages[0];
 
@@ -389,11 +378,9 @@ async function showPlatformGuide(platform, scrollToPackage = true) {
     const guide = await loadPlatformGuide(platform);
     console.log("Loaded platform guide", platform, guide.platform);
     renderPlatformGuide(guide);
-    showCompanionNotice();
   } catch (error) {
     console.error("Could not load platform guide", { platform, error });
     handoffInstructions.textContent = "I could not open that guide just now. You can still copy your Companion Package and paste it into the AI platform you use.\n\nYour next conversation starts there.";
-    showCompanionNotice();
     showToast("Something didn't work right. Let's try that again.");
   }
 }
@@ -430,40 +417,6 @@ function revealPackage(scrollToPackage = true) {
   if (scrollToPackage) {
     packagePanel.scrollIntoView({ behavior: "smooth", block: "start" });
   }
-}
-
-function showCompanionNotice() {
-  if (!siteFooter || document.querySelector("#companion-notice")) {
-    return;
-  }
-
-  const signature = siteFooter.querySelector(".site-signature");
-  const notice = createCompanionNotice();
-  siteFooter.insertBefore(notice, signature);
-}
-
-function hideCompanionNotice() {
-  document.querySelector("#companion-notice")?.remove();
-}
-
-function createCompanionNotice() {
-  const notice = document.createElement("section");
-  const title = document.createElement("h2");
-  const list = document.createElement("ul");
-
-  notice.id = "companion-notice";
-  notice.className = "companion-notice";
-  notice.setAttribute("aria-label", "Companion Core Notice");
-  title.textContent = "Companion Core Notice";
-
-  noticeItems.forEach((item) => {
-    const listItem = document.createElement("li");
-    listItem.textContent = item;
-    list.appendChild(listItem);
-  });
-
-  notice.append(title, list);
-  return notice;
 }
 
 async function loadPlatformGuide(platform) {
