@@ -22,6 +22,8 @@
 body {
   margin: 0;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background:
     linear-gradient(135deg, rgba(47, 111, 103, 0.1), transparent 34%),
     linear-gradient(180deg, rgba(255, 250, 242, 0.86), rgba(247, 243, 236, 0.96)),
@@ -45,7 +47,8 @@ button {
 
 .app-shell {
   width: min(1040px, 100%);
-  min-height: 100vh;
+  min-height: calc(100vh - 78px);
+  flex: 1;
   margin: 0 auto;
   padding: 34px;
   display: grid;
@@ -337,7 +340,7 @@ input[type="text"]:focus-visible {
 
 .builder-screen {
   position: relative;
-  padding: clamp(18px, 3vw, 34px);
+  padding: clamp(10px, 2.4vw, 24px);
 }
 
 .builder-screen::before {
@@ -361,77 +364,14 @@ input[type="text"]:focus-visible {
   font-weight: 700;
 }
 
-.builder-masthead {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 24px;
-  align-items: end;
-  margin-bottom: 22px;
-  padding: 18px 20px;
-  border: 1px solid rgba(216, 207, 193, 0.76);
-  border-radius: 8px;
-  background: rgba(255, 250, 242, 0.62);
-  box-shadow: var(--shadow-soft);
-}
-
-.builder-brand {
-  margin: 0 0 4px;
-  color: var(--accent-dark);
-  font-size: 1.15rem;
+.builder-progress {
+  max-width: 780px;
+  margin: 0 auto 14px;
+  color: rgba(95, 106, 99, 0.86);
+  font-size: 0.92rem;
   font-weight: 700;
-}
-
-.builder-tagline {
-  max-width: 560px;
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.98rem;
-  line-height: 1.35;
-}
-
-.journey-nav ol {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.journey-nav li {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.journey-nav li + li::before {
-  content: "";
-  width: 22px;
-  height: 1px;
-  background: rgba(47, 111, 103, 0.28);
-}
-
-.journey-step {
-  display: inline-flex;
-  align-items: center;
-  min-height: 34px;
-  padding: 6px 11px;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  color: var(--muted);
-  font-size: 0.82rem;
-  font-weight: 700;
-}
-
-.journey-step.is-complete {
-  color: var(--accent-dark);
-}
-
-.journey-step.is-current {
-  border-color: rgba(47, 111, 103, 0.32);
-  background: var(--soft);
-  color: var(--accent-dark);
+  line-height: 1.2;
+  text-align: right;
 }
 
 .builder-card,
@@ -840,6 +780,24 @@ pre {
   display: none;
 }
 
+.site-signature {
+  width: min(1040px, 100%);
+  margin: 0 auto;
+  padding: 0 34px 26px;
+  color: rgba(95, 106, 99, 0.82);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.site-signature p {
+  margin: 0;
+}
+
+.site-signature p:first-child {
+  color: rgba(33, 79, 73, 0.82);
+  font-weight: 700;
+}
+
 @media (max-width: 680px) {
   body {
     font-size: 18px;
@@ -847,6 +805,7 @@ pre {
   }
 
   .app-shell {
+    min-height: calc(100vh - 74px);
     padding: 12px;
     align-items: start;
   }
@@ -941,36 +900,13 @@ pre {
   }
 
   .builder-screen {
-    padding: 8px 0 24px;
+    padding: 4px 0 18px;
   }
 
-  .builder-masthead {
-    grid-template-columns: 1fr;
-    gap: 14px;
-    margin-bottom: 14px;
-    padding: 14px;
-  }
-
-  .builder-brand {
-    font-size: 1.04rem;
-  }
-
-  .builder-tagline {
-    font-size: 0.94rem;
-  }
-
-  .journey-nav ol {
-    gap: 6px;
-  }
-
-  .journey-nav li + li::before {
-    width: 10px;
-  }
-
-  .journey-step {
-    min-height: 30px;
-    padding: 5px 8px;
-    font-size: 0.74rem;
+  .builder-progress {
+    margin: 0 0 10px;
+    font-size: 0.84rem;
+    text-align: left;
   }
 
   .builder-card,
@@ -1120,6 +1056,11 @@ pre {
 
   .toast {
     font-size: 0.95rem;
+  }
+
+  .site-signature {
+    padding: 0 12px 18px;
+    font-size: 0.76rem;
   }
 }
 

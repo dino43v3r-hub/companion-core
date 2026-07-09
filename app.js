@@ -23,7 +23,7 @@ const finalClosingLine = document.querySelector("#final-closing-line");
 const platformButtons = document.querySelectorAll(".platform-button");
 const flowError = document.querySelector("#flow-error");
 const toastRegion = document.querySelector("#toast-region");
-const journeySteps = document.querySelectorAll(".journey-step");
+const builderProgress = document.querySelector("#builder-progress");
 
 const flowErrorMessage = "Something didn't open correctly. Please refresh and try again.";
 const revealMessages = [
@@ -126,15 +126,7 @@ function runFlowStep(action) {
 
 function installCompanionNotices() {
   insertNoticeAfter(welcomeScreen.querySelector(".welcome-copy"));
-  insertNoticeAfter(builderIntro.querySelector(".builder-copy"));
-
-  builderCards.forEach((card) => {
-    const intro = card.querySelector(".builder-copy") || card.querySelector(".question-kicker") || card.querySelector(".eyebrow");
-    insertNoticeAfter(intro);
-  });
-
   insertNoticeAfter(handoffScreen.querySelector(".package-note"));
-  insertNoticeAfter(packagePanel.querySelector(".package-reminder"));
 }
 
 function insertNoticeAfter(anchor) {
@@ -217,11 +209,11 @@ function showStep(step) {
 
   builderIntro.classList.add("hidden");
   handoffScreen.classList.add("hidden");
-  setJourneyStep("builder");
+  setQuestionProgress(step);
 }
 
 function showHomeSelection() {
-  setJourneyStep("home");
+  setProgressText("Step 1 of 3");
   builderIntro.classList.add("hidden");
   builderCards.forEach((card) => {
     card.classList.add("hidden");
@@ -251,7 +243,7 @@ function selectPlatform(platform) {
 
   handoffScreen.classList.add("hidden");
   builderIntro.classList.remove("hidden");
-  setJourneyStep("builder");
+  setProgressText("Step 2 of 3");
   builderIntro.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -261,28 +253,28 @@ function updatePlatformSelection() {
   });
 }
 
-function setJourneyStep(currentStep) {
-  const order = ["welcome", "home", "builder", "meet"];
-  const currentIndex = order.indexOf(currentStep);
+function setQuestionProgress(step) {
+  const questionIndex = stepOrder.indexOf(step);
 
-  journeySteps.forEach((step) => {
-    const stepIndex = order.indexOf(step.dataset.journeyStep);
-    const isCurrent = step.dataset.journeyStep === currentStep;
+  if (questionIndex < 0) {
+    setProgressText("");
+    return;
+  }
 
-    step.classList.toggle("is-current", isCurrent);
-    step.classList.toggle("is-complete", stepIndex >= 0 && stepIndex < currentIndex);
+  setProgressText(`Question ${questionIndex + 1} of ${stepOrder.length}`);
+}
 
-    if (isCurrent) {
-      step.setAttribute("aria-current", "step");
-      return;
-    }
+function setProgressText(text) {
+  if (!builderProgress) {
+    return;
+  }
 
-    step.removeAttribute("aria-current");
-  });
+  builderProgress.textContent = text;
+  builderProgress.classList.toggle("hidden", !text);
 }
 
 function showFinalPackage() {
-  setJourneyStep("meet");
+  setProgressText("");
   state.firstMessage = buildFirstMessage();
   state.companionPackage = buildCompanionPackage();
   profileText.textContent = state.companionPackage;

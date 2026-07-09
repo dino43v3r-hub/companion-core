@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Companion Core</title>
-    <link rel="stylesheet" href="styles.css?v=20260709-builder">
+    <link rel="stylesheet" href="styles.css?v=20260709-quiet">
   </head>
   <body>
     <main class="app-shell">
@@ -29,20 +29,7 @@
       <section id="builder-screen" class="builder-screen hidden" aria-live="polite">
         <p id="flow-error" class="flow-error hidden" role="alert"></p>
 
-        <header class="builder-masthead" aria-label="Companion Core journey">
-          <div>
-            <p class="builder-brand">Companion Core</p>
-            <p class="builder-tagline">Build a companion that begins with understanding.</p>
-          </div>
-          <nav class="journey-nav" aria-label="Builder progress">
-            <ol>
-              <li><span class="journey-step" data-journey-step="welcome">Welcome</span></li>
-              <li><span class="journey-step" data-journey-step="home">Home</span></li>
-              <li><span class="journey-step" data-journey-step="builder">Builder</span></li>
-              <li><span class="journey-step" data-journey-step="meet">Meet</span></li>
-            </ol>
-          </nav>
-        </header>
+        <p id="builder-progress" class="builder-progress hidden" aria-live="polite"></p>
 
         <section id="builder-intro" class="builder-card builder-intro hidden" aria-labelledby="builder-intro-title">
           <p class="eyebrow">Companion Builder</p>
@@ -154,8 +141,12 @@
         </section>
       </section>
     </main>
+    <footer class="site-signature" aria-label="Companion Core">
+      <p>Companion Core</p>
+      <p>Building AI companions that begin with understanding.</p>
+    </footer>
     <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
 
-    <script src="app.js?v=20260709-builder"></script>
+    <script src="app.js?v=20260709-quiet"></script>
   </body>
 </html>
