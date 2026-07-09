@@ -497,23 +497,6 @@ input[type="text"]:focus-visible {
   animation: softReveal 780ms ease both;
 }
 
-.companion-avatar {
-  display: grid;
-  place-items: center;
-  width: 92px;
-  height: 92px;
-  margin-bottom: 18px;
-  border: 1px solid rgba(47, 111, 103, 0.28);
-  border-radius: 999px;
-  background:
-    radial-gradient(circle at 35% 28%, rgba(255, 250, 242, 0.95), transparent 32%),
-    linear-gradient(145deg, rgba(47, 111, 103, 0.18), rgba(168, 121, 79, 0.22));
-  color: var(--accent-dark);
-  font-size: 2.2rem;
-  font-weight: 700;
-  box-shadow: var(--shadow-soft);
-}
-
 .reveal-label,
 .package-version {
   margin: 0 0 10px;
@@ -955,13 +938,6 @@ pre {
   .companion-reveal {
     margin: 20px 0 24px;
     padding-top: 18px;
-  }
-
-  .companion-avatar {
-    width: 74px;
-    height: 74px;
-    margin-bottom: 14px;
-    font-size: 1.8rem;
   }
 
   .reveal-copy {

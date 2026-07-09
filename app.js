@@ -18,7 +18,6 @@ const revealSequence = document.querySelector("#reveal-sequence");
 const revealSequenceText = document.querySelector("#reveal-sequence-text");
 const companionReveal = document.querySelector("#companion-reveal");
 const companionRevealTitle = document.querySelector("#companion-reveal-title");
-const companionAvatar = document.querySelector("#companion-avatar");
 const finalClosingLine = document.querySelector("#final-closing-line");
 const platformButtons = document.querySelectorAll(".platform-button");
 const flowError = document.querySelector("#flow-error");
@@ -262,7 +261,6 @@ function prepareCompanionReveal() {
   const companionName = state.companionName || "your companion";
 
   companionRevealTitle.textContent = `Meet ${companionName}.`;
-  companionAvatar.textContent = getInitial(companionName);
 }
 
 function startRevealSequence() {
@@ -665,11 +663,6 @@ function buildUnknowns() {
 function shorten(text) {
   const cleaned = cleanText(text);
   return cleaned.length > 90 ? `${cleaned.slice(0, 87)}...` : cleaned;
-}
-
-function getInitial(text) {
-  const cleaned = cleanText(text);
-  return cleaned ? cleaned[0].toUpperCase() : "C";
 }
 
 function formatProfileList(items) {
