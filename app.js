@@ -13,7 +13,15 @@ const handoffInstructions = document.querySelector("#handoff-instructions");
 const platformButtons = document.querySelectorAll(".platform-button");
 const flowError = document.querySelector("#flow-error");
 
-const flowErrorMessage = "Something didn’t open correctly. Please refresh and try again.";
+const flowErrorMessage = "Something didn't open correctly. Please refresh and try again.";
+const noticeItems = [
+  "No account required.",
+  "No database is used in this MVP.",
+  "Your information is only used while you're using this page.",
+  "Companion Core does not permanently store your Companion Package.",
+  "Once you copy your package into another AI platform, that platform's own privacy and memory settings apply.",
+  "Companion Core is not medical, legal, financial, or emergency advice."
+];
 
 const stepOrder = [
   "personName",
@@ -33,6 +41,8 @@ const state = {
   companionPackage: "",
   firstMessage: ""
 };
+
+installCompanionNotices();
 
 beginButton.addEventListener("click", () => runFlowStep(() => {
   welcomeScreen.classList.add("hidden");
@@ -85,6 +95,45 @@ function runFlowStep(action) {
   } catch (error) {
     showFlowError(error);
   }
+}
+
+function installCompanionNotices() {
+  insertNoticeAfter(welcomeScreen.querySelector(".welcome-copy"));
+
+  builderCards.forEach((card) => {
+    const intro = card.querySelector(".builder-copy") || card.querySelector(".eyebrow");
+    insertNoticeAfter(intro);
+  });
+
+  insertNoticeAfter(handoffScreen.querySelector(".package-note"));
+  insertNoticeAfter(packagePanel.querySelector(".package-reminder"));
+}
+
+function insertNoticeAfter(anchor) {
+  if (!anchor || !anchor.parentElement) {
+    return;
+  }
+
+  anchor.insertAdjacentElement("afterend", createCompanionNotice());
+}
+
+function createCompanionNotice() {
+  const notice = document.createElement("section");
+  const title = document.createElement("h2");
+  const list = document.createElement("ul");
+
+  notice.className = "companion-notice";
+  notice.setAttribute("aria-label", "Companion Core Notice");
+  title.textContent = "Companion Core Notice";
+
+  noticeItems.forEach((item) => {
+    const listItem = document.createElement("li");
+    listItem.textContent = item;
+    list.appendChild(listItem);
+  });
+
+  notice.append(title, list);
+  return notice;
 }
 
 function handleStep(card) {
