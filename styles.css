@@ -9,6 +9,10 @@
   --accent: #6e8faf;
   --accent-dark: #4f6d89;
   --soft: #e8eef3;
+  --butterfly-body: #7fa58a;
+  --butterfly-wing: #b79acf;
+  --butterfly-highlight: #d7c8e8;
+  --butterfly-deep: #9b7fbc;
   --user: #f1e2c8;
   --notice: rgba(232, 238, 243, 0.64);
   --shadow: 0 18px 50px rgba(45, 55, 49, 0.13);
@@ -80,24 +84,27 @@ button {
 
 .conversation-hint {
   position: relative;
-  width: min(460px, 100%);
-  height: 230px;
-  margin-bottom: 34px;
+  width: 100%;
+  max-width: 820px;
+  height: clamp(260px, 34vw, 360px);
+  margin-bottom: clamp(34px, 5vw, 50px);
   border: 1px solid rgba(216, 207, 193, 0.8);
   border-radius: 8px;
   background:
-    linear-gradient(180deg, rgba(255, 250, 242, 0.72), rgba(241, 226, 200, 0.42)),
-    repeating-linear-gradient(90deg, rgba(168, 121, 79, 0.04) 0 1px, transparent 1px 18px);
-  box-shadow: inset 0 -22px 0 rgba(168, 121, 79, 0.08);
+    radial-gradient(circle at 18% 28%, rgba(255, 250, 242, 0.86), transparent 24%),
+    radial-gradient(circle at 82% 26%, rgba(232, 238, 243, 0.74), transparent 24%),
+    linear-gradient(180deg, rgba(255, 250, 242, 0.78), rgba(241, 226, 200, 0.44)),
+    repeating-linear-gradient(90deg, rgba(168, 121, 79, 0.035) 0 1px, transparent 1px 22px);
+  box-shadow: inset 0 -34px 0 rgba(168, 121, 79, 0.09);
   overflow: hidden;
 }
 
 .warm-window {
   position: absolute;
-  left: 24px;
-  top: 20px;
-  width: 86px;
-  height: 64px;
+  left: clamp(22px, 5vw, 54px);
+  top: clamp(20px, 4vw, 42px);
+  width: clamp(92px, 17vw, 148px);
+  height: clamp(66px, 12vw, 104px);
   border: 5px solid rgba(168, 121, 79, 0.42);
   border-radius: 8px 8px 4px 4px;
   background:
@@ -109,8 +116,8 @@ button {
 .warm-window::after {
   content: "";
   position: absolute;
-  left: -18px;
-  right: -18px;
+  left: -22px;
+  right: -22px;
   bottom: -13px;
   height: 6px;
   border-radius: 999px;
@@ -131,9 +138,9 @@ button {
 }
 
 .chair {
-  bottom: 26px;
-  width: 92px;
-  height: 62px;
+  bottom: clamp(44px, 7vw, 68px);
+  width: clamp(92px, 13vw, 124px);
+  height: clamp(60px, 8vw, 82px);
   border: 5px solid var(--wood);
   border-top: 0;
   border-radius: 0 0 8px 8px;
@@ -148,10 +155,10 @@ button {
 }
 
 .chair::before {
-  left: 8px;
-  right: 8px;
-  top: -42px;
-  height: 44px;
+  left: 9%;
+  right: 9%;
+  top: -68%;
+  height: 70%;
   border-radius: 8px 8px 3px 3px;
 }
 
@@ -164,35 +171,35 @@ button {
 }
 
 .chair-dino {
-  left: 34px;
+  left: 8%;
   transform: rotate(-2deg);
 }
 
 .chair-butterfly {
-  right: 34px;
+  right: 8%;
   transform: rotate(2deg);
 }
 
 .chair-visitor {
   left: 50%;
-  bottom: 4px;
-  width: 78px;
-  height: 46px;
+  bottom: clamp(16px, 2.6vw, 28px);
+  width: clamp(86px, 12vw, 112px);
+  height: clamp(48px, 6.6vw, 64px);
   transform: translateX(-50%) rotate(1deg);
   opacity: 0.82;
 }
 
 .chair-visitor::before {
-  top: -32px;
-  height: 34px;
+  top: -62%;
+  height: 64%;
   background: rgba(168, 121, 79, 0.78);
 }
 
 .table {
   left: 50%;
-  bottom: 58px;
-  width: 104px;
-  height: 58px;
+  bottom: clamp(78px, 11vw, 112px);
+  width: clamp(132px, 20vw, 176px);
+  height: clamp(64px, 9vw, 84px);
   transform: translateX(-50%);
   border-top: 8px solid var(--wood-dark);
 }
@@ -203,24 +210,24 @@ button {
   position: absolute;
   top: 4px;
   width: 6px;
-  height: 54px;
+  height: 100%;
   background: var(--wood-dark);
   border-radius: 999px;
 }
 
 .table::before {
-  left: 25px;
+  left: 25%;
   transform: rotate(5deg);
 }
 
 .table::after {
-  right: 25px;
+  right: 25%;
   transform: rotate(-5deg);
 }
 
 .mug {
-  width: 24px;
-  height: 22px;
+  width: clamp(24px, 3.3vw, 32px);
+  height: clamp(22px, 3vw, 29px);
   border: 3px solid var(--wood-dark);
   border-radius: 4px 4px 7px 7px;
   background: rgba(255, 250, 242, 0.9);
@@ -239,41 +246,41 @@ button {
 }
 
 .mug-table-left {
-  left: 20px;
-  top: -32px;
+  left: 25%;
+  top: -42%;
   transform: rotate(-4deg);
 }
 
 .mug-table-right {
-  right: 18px;
-  top: -32px;
+  right: 20%;
+  top: -42%;
   transform: rotate(5deg);
 }
 
 .mug-dino {
-  left: 62px;
-  top: -48px;
+  left: 64%;
+  top: -68%;
   transform: rotate(-8deg) scale(0.82);
 }
 
 .mug-butterfly {
-  right: 57px;
-  top: -50px;
+  right: 58%;
+  top: -70%;
   transform: rotate(8deg) scale(0.78);
 }
 
 .dino-character {
-  left: 19px;
-  bottom: 42px;
-  width: 62px;
-  height: 88px;
+  left: 18%;
+  bottom: 62%;
+  width: clamp(62px, 9vw, 88px);
+  height: clamp(88px, 13vw, 124px);
 }
 
 .dino-head {
-  left: 6px;
+  left: 10%;
   top: 0;
-  width: 51px;
-  height: 43px;
+  width: 82%;
+  height: 49%;
   border: 4px solid var(--accent-dark);
   border-radius: 56% 48% 48% 52%;
   background: var(--accent);
@@ -282,10 +289,10 @@ button {
 .dino-head::before {
   content: "";
   position: absolute;
-  right: 6px;
-  top: -10px;
-  width: 14px;
-  height: 14px;
+  right: 12%;
+  top: -23%;
+  width: 22%;
+  height: 30%;
   border-radius: 4px 10px 4px 10px;
   background: var(--soft);
   border: 3px solid var(--accent-dark);
@@ -295,20 +302,22 @@ button {
 .dino-head::after {
   content: "";
   position: absolute;
-  right: 10px;
-  top: 15px;
-  width: 7px;
-  height: 7px;
-  border-radius: 999px;
-  background: var(--paper);
-  box-shadow: -23px 2px 0 -1px var(--paper);
+  left: 18%;
+  right: 18%;
+  top: 35%;
+  width: auto;
+  height: 16%;
+  border-radius: 0;
+  background:
+    radial-gradient(circle at 12% 52%, var(--paper) 0 26%, transparent 29%),
+    radial-gradient(circle at 88% 48%, var(--paper) 0 26%, transparent 29%);
 }
 
 .dino-body {
-  left: 13px;
-  top: 38px;
-  width: 44px;
-  height: 50px;
+  left: 21%;
+  top: 43%;
+  width: 70%;
+  height: 57%;
   border: 4px solid var(--accent-dark);
   border-radius: 42% 42% 36% 36%;
   background: var(--accent);
@@ -317,27 +326,27 @@ button {
 .dino-body::after {
   content: "";
   position: absolute;
-  left: 12px;
-  top: 13px;
-  width: 18px;
-  height: 23px;
+  left: 28%;
+  top: 25%;
+  width: 42%;
+  height: 48%;
   border-radius: 999px;
   background: rgba(255, 250, 242, 0.42);
 }
 
 .butterfly-character {
-  right: 19px;
-  bottom: 48px;
-  width: 64px;
-  height: 72px;
+  right: 15%;
+  bottom: 72%;
+  width: clamp(70px, 11vw, 104px);
+  height: clamp(78px, 12vw, 112px);
 }
 
 .wing {
-  top: 8px;
-  width: 32px;
-  height: 46px;
-  border: 4px solid var(--wood-dark);
-  background: rgba(241, 226, 200, 0.96);
+  top: 10%;
+  width: 50%;
+  height: 64%;
+  border: 4px solid var(--butterfly-deep);
+  background: var(--butterfly-wing);
 }
 
 .wing-left {
@@ -355,41 +364,41 @@ button {
 .wing::after {
   content: "";
   position: absolute;
-  inset: 12px 9px;
+  inset: 25% 24%;
   border-radius: inherit;
-  background: rgba(110, 143, 175, 0.2);
+  background: var(--butterfly-highlight);
 }
 
 .butterfly-body {
   left: 50%;
-  top: 19px;
-  width: 13px;
-  height: 45px;
+  top: 28%;
+  width: 20%;
+  height: 62%;
   transform: translateX(-50%);
   border-radius: 999px;
-  background: var(--accent-dark);
+  background: var(--butterfly-body);
 }
 
 .butterfly-body::before,
 .butterfly-body::after {
   content: "";
   position: absolute;
-  top: -9px;
-  width: 15px;
-  height: 16px;
-  border-top: 3px solid var(--accent-dark);
+  top: -20%;
+  width: 115%;
+  height: 34%;
+  border-top: 3px solid var(--butterfly-body);
 }
 
 .butterfly-body::before {
-  right: 5px;
-  border-left: 3px solid var(--accent-dark);
+  right: 38%;
+  border-left: 3px solid var(--butterfly-body);
   border-radius: 999px 0 0 0;
   transform: rotate(-15deg);
 }
 
 .butterfly-body::after {
-  left: 5px;
-  border-right: 3px solid var(--accent-dark);
+  left: 38%;
+  border-right: 3px solid var(--butterfly-body);
   border-radius: 0 999px 0 0;
   transform: rotate(15deg);
 }
@@ -1026,8 +1035,8 @@ pre {
 
   .conversation-hint {
     width: 100%;
-    height: 178px;
-    margin-bottom: 22px;
+    height: clamp(188px, 54vw, 236px);
+    margin-bottom: 24px;
   }
 
   .warm-window {
@@ -1039,62 +1048,55 @@ pre {
   }
 
   .chair {
-    width: 66px;
-    height: 45px;
+    width: clamp(58px, 20vw, 76px);
+    height: clamp(40px, 13vw, 52px);
     border-width: 4px;
   }
 
   .chair::before {
-    top: -31px;
-    height: 33px;
     left: 6px;
     right: 6px;
   }
 
   .chair-dino {
-    left: 13px;
-    bottom: 24px;
+    left: 6%;
+    bottom: 42px;
   }
 
   .chair-butterfly {
-    right: 13px;
-    bottom: 24px;
+    right: 6%;
+    bottom: 42px;
   }
 
   .chair-visitor {
-    width: 58px;
-    height: 36px;
-    bottom: 2px;
-  }
-
-  .chair-visitor::before {
-    top: -25px;
-    height: 27px;
+    width: clamp(60px, 20vw, 78px);
+    height: clamp(36px, 12vw, 46px);
+    bottom: 8px;
   }
 
   .table {
-    bottom: 44px;
-    width: 74px;
-    height: 48px;
+    bottom: clamp(60px, 18vw, 76px);
+    width: clamp(86px, 30vw, 116px);
+    height: clamp(48px, 14vw, 60px);
     border-top-width: 6px;
   }
 
   .table::before,
   .table::after {
-    height: 43px;
+    height: 100%;
   }
 
   .table::before {
-    left: 18px;
+    left: 25%;
   }
 
   .table::after {
-    right: 18px;
+    right: 25%;
   }
 
   .mug {
-    width: 19px;
-    height: 17px;
+    width: clamp(18px, 6vw, 22px);
+    height: clamp(16px, 5.4vw, 20px);
     border-width: 3px;
   }
 
@@ -1106,36 +1108,40 @@ pre {
   }
 
   .mug-table-left {
-    left: 13px;
-    top: -26px;
+    left: 22%;
+    top: -40%;
   }
 
   .mug-table-right {
-    right: 12px;
-    top: -26px;
+    right: 18%;
+    top: -40%;
   }
 
   .mug-dino {
-    left: 43px;
-    top: -37px;
+    left: 60%;
+    top: -68%;
   }
 
   .mug-butterfly {
-    right: 38px;
-    top: -39px;
+    right: 56%;
+    top: -70%;
   }
 
   .dino-character {
-    left: 11px;
-    bottom: 32px;
-    transform: scale(0.72);
+    left: 15%;
+    bottom: 60%;
+    width: clamp(48px, 15vw, 62px);
+    height: clamp(68px, 21vw, 88px);
+    transform: none;
     transform-origin: bottom left;
   }
 
   .butterfly-character {
-    right: 3px;
-    bottom: 36px;
-    transform: scale(0.72);
+    right: 10%;
+    bottom: 72%;
+    width: clamp(54px, 18vw, 70px);
+    height: clamp(62px, 20vw, 78px);
+    transform: none;
     transform-origin: bottom right;
   }
 
